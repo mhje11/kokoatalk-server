@@ -47,7 +47,7 @@ tasks.named('test') {
 tasks.named('bootJar') {
     manifest {
         attributes(
-                'Main-Class': 'org.kokoatalkserver.Application' // Main 클래스 경로를 여기에 작성
+                'Main-Class': 'org.kokoatalkserver.KokoatalkServerApplication'
         )
     }
 }
