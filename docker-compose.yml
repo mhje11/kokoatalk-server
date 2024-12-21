@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: kokoatalk
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - "3306:3306"
+    networks:
+      - kokoa-network
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+  kokoatalkRedis:
+    image: redis:6.2
+    container_name: kokoatalkRedis
+    restart: always
+    ports:
+      - "6379:6379"
+    networks:
+      - kokoa-network
+
+  kokoa-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: kokoa-app
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      SPRING_REDIS_HOST: ${SPRING_REDIS_HOST}
+      SPRING_REDIS_PORT: ${SPRING_REDIS_PORT}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: ${SPRING_JPA_HIBERNATE_DDL_AUTO}
+      SPRING_JPA_SHOW_SQL: ${SPRING_JPA_SHOW_SQL}
+      SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL: ${SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL}
+      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: ${SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+      JWT_REFRESH_KEY: ${JWT_REFRESH_KEY}
+    networks:
+      - kokoa-network
+
+networks:
+  kokoa-network:
+    driver: bridge
+
+volumes:
+  mysql-data:
