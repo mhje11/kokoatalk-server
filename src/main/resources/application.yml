@@ -24,4 +24,4 @@ jwt:
   refreshKey: ${JWT_REFRESH_KEY}
 
 server:
-  port: ${PORT:8080}
+  port: ${PORT}
