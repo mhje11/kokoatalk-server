@@ -1,27 +1,28 @@
 spring:
   datasource:
-    url: ${SPRING_DATASOURCE_URL}
-    username: ${SPRING_DATASOURCE_USERNAME}
-    password: ${SPRING_DATASOURCE_PASSWORD}
+    url: jdbc:${JAWSDB_URL}
+    username: ${JDBC_USERNAME}
+    password: ${JDBC_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
     hibernate:
-      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO}
-    show-sql: ${SPRING_JPA_SHOW_SQL}
+      ddl-auto: update
+    show-sql: true
     properties:
       hibernate:
-        format_sql: ${SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL}
-        dialect: ${SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT}
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQL8Dialect
 
   data:
     redis:
-      host: ${SPRING_REDIS_HOST}
-      port: ${SPRING_REDIS_PORT}
+      host: jdbc:${REDIS_HOST}
+      port: ${REDIS_PORT}
+      password: ${REDIS_PASSWORD}
 
 jwt:
   secretKey: ${JWT_SECRET_KEY}
   refreshKey: ${JWT_REFRESH_KEY}
 
 server:
-  port: ${PORT}
+  port: ${PORT:8080}
