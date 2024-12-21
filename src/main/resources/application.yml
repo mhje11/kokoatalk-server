@@ -22,3 +22,6 @@ spring:
 jwt:
   secretKey: ${JWT_SECRET_KEY}
   refreshKey: ${JWT_REFRESH_KEY}
+
+server:
+  port: ${PORT:8080}
