@@ -43,15 +43,6 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
-// 실행 가능한 JAR 파일 생성
-tasks.named('bootJar') {
-    manifest {
-        attributes(
-                'Main-Class': 'org.kokoatalkserver.KokoatalkServerApplication'
-        )
-    }
-}
-
-tasks.named('jar') {
-    enabled = false // 일반 JAR 파일 생성을 비활성화
+bootJar{
+    destinationDirectory = file("./target") //gradle build 시 jar 파일이 생성되는 파일명 및 위치를 설정한다.
 }
