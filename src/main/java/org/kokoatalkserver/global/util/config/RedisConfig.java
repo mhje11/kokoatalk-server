@@ -8,6 +8,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.connection.RedisPassword;
+import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
+import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
@@ -22,9 +25,26 @@ public class RedisConfig {
     @Value("${REDIS_PORT}")
     private int redisPort;
 
+    @Value("${REDIS_PASSWORD:}") // 비밀번호가 설정되지 않을 수도 있으므로 기본값은 빈 문자열
+    private String redisPassword;
+
     @Bean
-    public RedisConnectionFactory redisConnectionFactory() {
-        return new LettuceConnectionFactory(redisHost, redisPort);
+    public LettuceConnectionFactory redisConnectionFactory() {
+        RedisStandaloneConfiguration redisConfig = new RedisStandaloneConfiguration();
+        redisConfig.setHostName(redisHost);
+        redisConfig.setPort(redisPort);
+
+        if (!redisPassword.isBlank()) { // 비밀번호가 설정된 경우
+            redisConfig.setPassword(RedisPassword.of(redisPassword));
+        }
+
+        // Connection Pool 설정
+        LettuceClientConfiguration clientConfig = LettuceClientConfiguration.builder()
+                .useSsl() // 필요 시 TLS 활성화
+                .and()
+                .build();
+
+        return new LettuceConnectionFactory(redisConfig, clientConfig);
     }
 
     @Bean
