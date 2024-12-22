@@ -16,7 +16,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @Configuration
 public class RedisConfig {
 
-    private String jdbcRedisHost = "jdbc:" + "redis-11440.c3.eu-west-1-2.ec2.redns.redis-cloud.com";
+    private String jdbcRedisHost = "redis-11440.c3.eu-west-1-2.ec2.redns.redis-cloud.com";
 
     private int redisPort = 11440;
 
