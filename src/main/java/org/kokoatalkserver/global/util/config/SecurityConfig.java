@@ -65,6 +65,9 @@ public class SecurityConfig {
                         .deleteCookies("accessToken", "refreshToken")
                         .permitAll()
                 );
+        http
+                .requiresChannel(channel ->
+                        channel.anyRequest().requiresSecure());
         return http.build();
     }
 
