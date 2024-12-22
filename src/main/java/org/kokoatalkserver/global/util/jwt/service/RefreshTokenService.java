@@ -5,6 +5,7 @@ import org.kokoatalkserver.global.util.jwt.entity.RefreshToken;
 import org.kokoatalkserver.global.util.jwt.repository.RefreshTokenRepository;
 import org.kokoatalkserver.global.util.jwt.util.JwtTokenizer;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
