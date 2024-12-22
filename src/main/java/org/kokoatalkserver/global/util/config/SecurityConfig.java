@@ -1,5 +1,6 @@
 package org.kokoatalkserver.global.util.config;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.kokoatalkserver.global.util.jwt.entity.RefreshToken;
 import org.kokoatalkserver.global.util.jwt.filter.JwtAuthenticationFilter;
@@ -53,6 +54,16 @@ public class SecurityConfig {
                 )
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenizer, refreshTokenService),
                         UsernamePasswordAuthenticationFilter.class);
+
+        http
+                .logout(logout -> logout
+                        .logoutUrl("/api/auth/logout")
+                        .logoutSuccessHandler((request, response, authentication) -> {
+                            response.setStatus(HttpServletResponse.SC_OK);
+                        })
+                        .deleteCookies("accessToken", "refreshToken")
+                        .permitAll()
+                );
         return http.build();
     }
 

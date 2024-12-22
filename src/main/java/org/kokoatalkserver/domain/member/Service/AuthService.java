@@ -64,4 +64,12 @@ public class AuthService {
         return new String[]{accessToken, refreshToken};
     }
 
+    @Transactional
+    public void logout(String refreshToken) {
+        if (refreshToken == null) {
+            throw new CustomException(ExceptionCode.UNAUTHORIZED);
+        }
+        refreshTokenService.deleteRefreshToken(refreshToken);
+    }
+
 }

@@ -36,5 +36,9 @@ public class RefreshTokenService {
         return refreshTokenRepository.findByKokoaId(userId);
     }
 
+    @Transactional
+    public void deleteRefreshToken(String refresh) {
+        refreshTokenRepository.deleteByRefresh(refresh);
+    }
 
 }

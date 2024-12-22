@@ -1,5 +1,6 @@
 package org.kokoatalkserver.domain.member.Controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.kokoatalkserver.domain.member.Service.AuthService;
@@ -51,6 +52,16 @@ public class AuthRestController {
                 .build();
 
         return ResponseEntity.ok(loginResponseDto);
+    }
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(HttpServletRequest request, HttpServletResponse response) {
+        String refreshToken = cookieService.getCookieValue(request, "refreshToken");
+        authService.logout(refreshToken);
+
+        cookieService.deleteCookie(response, "accessToken");
+        cookieService.deleteCookie(response, "refreshToken");
+
+        return ResponseEntity.ok("로그아웃되었습니다.");
     }
 
 

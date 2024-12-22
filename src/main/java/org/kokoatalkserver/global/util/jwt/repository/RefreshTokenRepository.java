@@ -8,4 +8,6 @@ import java.util.Optional;
 public interface RefreshTokenRepository extends CrudRepository<RefreshToken, String> {
     Optional<RefreshToken> findByRefresh(String value);
     Optional<RefreshToken> findByKokoaId(String kokoaId);
+
+    void deleteByRefresh(String refresh);
 }
