@@ -25,26 +25,10 @@ public class RedisConfig {
     @Value("${REDIS_PORT}")
     private int redisPort;
 
-    @Value("${REDIS_PASSWORD:}") // 비밀번호가 설정되지 않을 수도 있으므로 기본값은 빈 문자열
-    private String redisPassword;
 
     @Bean
     public LettuceConnectionFactory redisConnectionFactory() {
-        RedisStandaloneConfiguration redisConfig = new RedisStandaloneConfiguration();
-        redisConfig.setHostName(redisHost);
-        redisConfig.setPort(redisPort);
-
-        if (!redisPassword.isBlank()) { // 비밀번호가 설정된 경우
-            redisConfig.setPassword(RedisPassword.of(redisPassword));
-        }
-
-        // Connection Pool 설정
-        LettuceClientConfiguration clientConfig = LettuceClientConfiguration.builder()
-                .useSsl() // 필요 시 TLS 활성화
-                .and()
-                .build();
-
-        return new LettuceConnectionFactory(redisConfig, clientConfig);
+      return new LettuceConnectionFactory(redisHost, redisPort);
     }
 
     @Bean
@@ -54,15 +38,12 @@ public class RedisConfig {
 
         // Key serializer
         redisTemplate.setKeySerializer(new StringRedisSerializer());
+        redisTemplate.setValueSerializer(new StringRedisSerializer());
 
-        // Custom ObjectMapper for value serialization
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        redisTemplate.setHashKeySerializer(new StringRedisSerializer());
+        redisTemplate.setHashValueSerializer(new StringRedisSerializer());
 
-        // Value serializer with custom ObjectMapper
-        redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer(objectMapper));
-
+        redisTemplate.setDefaultSerializer(new StringRedisSerializer());
         return redisTemplate;
     }
 }
