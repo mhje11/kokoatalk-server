@@ -15,7 +15,7 @@ import java.time.Instant;
 @RedisHash("refresh_token")
 public class RefreshToken implements Serializable {
     @Id
-    private String kokoaId;
+    private String loginId;
     @Indexed
     private String refresh;
     private Instant expiration;
@@ -23,8 +23,8 @@ public class RefreshToken implements Serializable {
     @TimeToLive
     private Long ttl;
 
-    public RefreshToken(String kokoaId, String refresh, Long ttl) {
-        this.kokoaId = kokoaId;
+    public RefreshToken(String loginId, String refresh, Long ttl) {
+        this.loginId = loginId;
         this.refresh = refresh;
         this.expiration = Instant.now().plusSeconds(ttl);
         this.ttl = ttl;
