@@ -46,7 +46,7 @@ public class AuthRestController {
         // 로그인 성공한 사용자 정보 응답
         Member member = memberService.findByLoginId(loginRequestDTO.getLoginId());
         LoginResponseDto loginResponseDto = LoginResponseDto.builder()
-                .loginId(String.valueOf(member.getKokoaId()))
+                .loginId(String.valueOf(member.getLoginId()))
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .build();

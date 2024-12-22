@@ -80,6 +80,7 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.addAllowedOrigin("https://www.kokoatalk.shop");
+        config.addAllowedOrigin("https://api.kokoatalk.shop");
         config.addAllowedOrigin("http://localhost:8080");
         config.addAllowedOrigin("https://kokoatalk-server-c794b03f124a.herokuapp.com");
         config.addAllowedHeader("*");
