@@ -30,7 +30,7 @@ public class SecurityConfig {
     private final RefreshTokenService refreshTokenService;
 
     String[] allAllowPage = new String[] {
-            "/api/auth/**"
+            "/api/auth/signup", "/api/auth/login"
     };
 
     String[] authPage = new String[] {
@@ -69,6 +69,8 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.addAllowedOrigin("https://www.kokoatalk.shop");
+        config.addAllowedOrigin("http://localhost:8080");
+        config.addAllowedOrigin("https://kokoatalk-server-c794b03f124a.herokuapp.com");
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
         config.setAllowCredentials(true); // 쿠키 허용을 위해 필요
