@@ -3,8 +3,8 @@ package org.kokoatalkserver.global.util.exception.handler;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.howmanyplay.util.exception.CustomException;
-import org.howmanyplay.util.exception.ExceptionCode;
+import org.kokoatalkserver.global.util.exception.CustomException;
+import org.kokoatalkserver.global.util.exception.ExceptionCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
