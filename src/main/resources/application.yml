@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:${JAWSDB_URL}
-    username: ${JDBC_USERNAME}
-    password: ${JDBC_PASSWORD}
+    url: jdbc:mysql://f5k1f74p0agvbpc9:ysn6lxvjkgb5blz0@q2gen47hi68k1yrb.chr7pe7iynqr.eu-west-1.rds.amazonaws.com:3306/tsapvcspc4binhdv
+    username: f5k1f74p0agvbpc9
+    password: ysn6lxvjkgb5blz0
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
@@ -16,13 +16,13 @@ spring:
 
   data:
     redis:
-      host: jdbc:${REDIS_HOST}
-      port: ${REDIS_PORT}
-      password: ${REDIS_PASSWORD}
+      host: jdbc:q2gen47hi68k1yrb.chr7pe7iynqr.eu-west-1.rds.amazonaws.com
+      port: 11440
+      password: KaoL9IuSiZibM6PFfcmeRvcuJJef2WxB
 
 jwt:
-  secretKey: ${JWT_SECRET_KEY}
-  refreshKey: ${JWT_REFRESH_KEY}
+  secretKey: 632488aa9012cba8a4e941209dee47bd27080939ab3ee6f5ff387efc3d41e46a
+  refreshKey: 365a62bd652e5aa4cbeafb9f15d560e4accecda056cf73cd5480a96f1b76a1a3
 
 server:
   port: ${PORT:8080}

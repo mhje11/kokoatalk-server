@@ -15,14 +15,10 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
 public class RedisConfig {
-    @Value("${REDIS_HOST}")
-    private String redisHost;
 
-    private String jdbcRedisHost = "jdbc:" + redisHost;
+    private String jdbcRedisHost = "jdbc:" + "redis-11440.c3.eu-west-1-2.ec2.redns.redis-cloud.com";
 
-
-    @Value("${REDIS_PORT}")
-    private int redisPort;
+    private int redisPort = 11440;
 
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
