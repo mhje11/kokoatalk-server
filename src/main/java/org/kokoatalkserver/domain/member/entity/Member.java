@@ -12,8 +12,12 @@ import lombok.NoArgsConstructor;
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     @Column(name = "kokoa_id")
     private Long kokoaId;
+
+    @Column(name = "friend_code")
+    private String friendCode;
 
     @Column(nullable = false, unique = true, name = "login_id")
     private String loginId;
@@ -38,6 +42,7 @@ public class Member {
         this.loginId = loginId;
         this.password = password;
         this.role = Role.MEMBER;
+        this.friendCode = loginId;
         this.bio = bio != null ? bio : "상태 메시지를 적용해보세요";
         this.profile_url = profileUrl != null ? profileUrl : "http://default.com/profile.jpg";
         this.background_url = backgroundUrl != null ? backgroundUrl : "http://default.com/background.jpg";
