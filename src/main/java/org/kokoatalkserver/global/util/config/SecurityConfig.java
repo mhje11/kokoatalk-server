@@ -31,7 +31,8 @@ public class SecurityConfig {
     private final RefreshTokenService refreshTokenService;
 
     String[] allAllowPage = new String[] {
-            "/api/auth/signup", "/api/auth/login"
+            "/api/auth/signup", "/api/auth/login", "/",
+            "/api/auth/logout"
     };
 
     String[] authPage = new String[] {
