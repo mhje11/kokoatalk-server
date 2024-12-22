@@ -2,6 +2,7 @@ package org.kokoatalkserver.domain.member.Service;
 
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.kokoatalkserver.domain.member.dto.SignUpRequestDto;
 import org.kokoatalkserver.domain.member.entity.Member;
 import org.kokoatalkserver.domain.member.repository.MemberRepository;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class AuthService {
     private final MemberRepository memberRepository;
@@ -30,6 +32,7 @@ public class AuthService {
 
         Member member = Member.builder()
                 .loginId(signUpRequestDto.getLoginId())
+                .nickname(signUpRequestDto.getNickname())
                 .password(passwordEncoder.encode(signUpRequestDto.getPassword()))
                 .build();
 

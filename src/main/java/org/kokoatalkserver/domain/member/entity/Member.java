@@ -46,7 +46,7 @@ public class Member {
         this.bio = bio != null ? bio : "상태 메시지를 적용해보세요";
         this.profile_url = profileUrl != null ? profileUrl : "http://default.com/profile.jpg";
         this.background_url = backgroundUrl != null ? backgroundUrl : "http://default.com/background.jpg";
-        this.nickname = nickname != null ? nickname : loginId;
+        this.nickname = nickname;
     }
 
 

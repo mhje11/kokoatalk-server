@@ -27,6 +27,7 @@ public enum ExceptionCode {
     ACCESS_DENIED(403, HttpStatus.FORBIDDEN, "접근 권한이 없습니다."),
     NO_LOGIN(401, HttpStatus.UNAUTHORIZED, "로그인후 이용 가능합니다."),
     INVALID_REFRESH_TOKEN(401, HttpStatus.UNAUTHORIZED, "유효하지 않은 리프레시 토큰입니다."),
+    REFRESH_TOKEN_NOT_FOUND(404, HttpStatus.NOT_FOUND,"토큰이 존재하지 않습니다."),
 
 
     /**

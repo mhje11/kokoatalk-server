@@ -1,6 +1,9 @@
 package org.kokoatalkserver.global.util.jwt.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.kokoatalkserver.global.util.exception.CustomException;
+import org.kokoatalkserver.global.util.exception.ExceptionCode;
 import org.kokoatalkserver.global.util.jwt.entity.RefreshToken;
 import org.kokoatalkserver.global.util.jwt.repository.RefreshTokenRepository;
 import org.kokoatalkserver.global.util.jwt.util.JwtTokenizer;
@@ -11,6 +14,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class RefreshTokenService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final JwtTokenizer jwtTokenizer;
@@ -39,7 +43,13 @@ public class RefreshTokenService {
 
     @Transactional
     public void deleteRefreshToken(String refresh) {
-        refreshTokenRepository.deleteByRefresh(refresh);
+        int deletedCount = refreshTokenRepository.deleteByRefresh(refresh);
+        if (deletedCount == 0) {
+            log.warn("Refresh token not found or already deleted: {}", refresh);
+            throw new CustomException(ExceptionCode.REFRESH_TOKEN_NOT_FOUND);
+        }
+        log.info("Refresh token deleted successfully: {}", refresh);
     }
+
 
 }
