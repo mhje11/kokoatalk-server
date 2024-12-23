@@ -12,12 +12,16 @@ import org.kokoatalkserver.domain.member.dto.MemberLoginResponseDto;
 import org.kokoatalkserver.domain.member.dto.SignUpRequestDto;
 import org.kokoatalkserver.domain.member.entity.Member;
 import org.kokoatalkserver.global.util.jwt.service.CookieService;
+import org.kokoatalkserver.global.util.jwt.service.RefreshTokenService;
 import org.kokoatalkserver.global.util.jwt.util.JwtTokenizer;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -27,6 +31,8 @@ public class AuthRestController {
     private final AuthService authService;
     private final CookieService cookieService;
     private final MemberService memberService;
+    private final RefreshTokenService refreshTokenService;
+    private final JwtTokenizer jwtTokenizer;
 
     @PostMapping("/signup")
     public ResponseEntity<String> signup(@RequestBody SignUpRequestDto signUpRequestDto) {
@@ -44,7 +50,7 @@ public class AuthRestController {
 
         // 쿠키 추가
         cookieService.addCookie(response, "accessToken", accessToken, (int) (JwtTokenizer.ACCESS_TOKEN_EXPIRE_COUNT / 1000));
-        cookieService.addCookie(response, "refreshToken", refreshToken, (int) (JwtTokenizer.REFRESH_TOKEN_EXPIRE_COUNT / 1000));
+        cookieService.addRefreshToken(response, "refreshToken", refreshToken, (int) (JwtTokenizer.REFRESH_TOKEN_EXPIRE_COUNT / 1000));
 
         // 로그인 성공한 사용자 정보 응답
         Member member = memberService.findByLoginId(loginRequestDTO.getAccountId());
@@ -53,7 +59,6 @@ public class AuthRestController {
         LoginResponseDto loginResponseDto = LoginResponseDto.builder()
                 .memberLoginResponseDto(memberLoginResponseDto)
                 .accessToken(accessToken)
-                .refreshToken(refreshToken)
                 .build();
         log.info("로그인 성공 : " + member.getLoginId());
         return ResponseEntity.ok(loginResponseDto);
@@ -69,6 +74,39 @@ public class AuthRestController {
         cookieService.deleteCookie(response, "refreshToken");
 
         return ResponseEntity.ok("로그아웃되었습니다.");
+    }
+    @PostMapping("/refresh")
+    public ResponseEntity<?> refreshAccessToken(HttpServletRequest request, HttpServletResponse response) {
+        // Step 1: 쿠키에서 리프레시 토큰 추출
+        String refreshToken = null;
+        if (request.getCookies() != null) {
+            for (var cookie : request.getCookies()) {
+                if ("refreshToken".equals(cookie.getName())) {
+                    refreshToken = cookie.getValue();
+                    break;
+                }
+            }
+        }
+
+        if (refreshToken == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("리프레시 토큰이 없습니다.");
+        }
+
+        // Step 2: 리프레시 토큰 유효성 검증
+        if (!refreshTokenService.isRefreshTokenValid(refreshToken)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("리프레시 토큰이 유효하지 않습니다.");
+        }
+
+        // Step 3: 새로운 액세스 토큰 발급
+        String loginId = refreshTokenService.getUserIdFromRefreshToken(refreshToken); // 사용자 ID 추출
+        Member member = memberService.findByLoginId(loginId);
+        String newAccessToken = jwtTokenizer.createAccessToken(member.getKokoaId(), member.getLoginId(), member.getRole().name());
+
+        // Step 4: 새로운 액세스 토큰 반환
+        return ResponseEntity.ok()
+                .body(Map.of("accessToken", newAccessToken));
     }
 
 

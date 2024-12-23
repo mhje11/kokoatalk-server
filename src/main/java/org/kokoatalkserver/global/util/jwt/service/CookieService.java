@@ -17,6 +17,14 @@ public class CookieService {
         cookie.setMaxAge(maxAge);
         response.addCookie(cookie);
     }
+    public void addRefreshToken(HttpServletResponse response, String name, String value, int maxAge) {
+        Cookie cookie = new Cookie(name, value);
+        cookie.setPath("/");
+        cookie.setMaxAge(maxAge);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
+        response.addCookie(cookie);
+    }
 
     //쿠키 삭제
     public void deleteCookie(HttpServletResponse response, String name) {

@@ -7,6 +7,7 @@ import org.kokoatalkserver.global.util.exception.ExceptionCode;
 import org.kokoatalkserver.global.util.jwt.entity.RefreshToken;
 import org.kokoatalkserver.global.util.jwt.repository.RefreshTokenRepository;
 import org.kokoatalkserver.global.util.jwt.util.JwtTokenizer;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +18,7 @@ import java.util.Optional;
 @Slf4j
 public class RefreshTokenService {
     private final RefreshTokenRepository refreshTokenRepository;
+    private final RedisTemplate<String, Object> redisTemplate;
     private final JwtTokenizer jwtTokenizer;
 
 
@@ -47,5 +49,11 @@ public class RefreshTokenService {
         log.info("Refresh token deleted successfully: {}", refresh);
     }
 
-
+    public String getUserIdFromRefreshToken(String refreshToken) {
+        Optional<RefreshToken> optionalToken = findByRefresh(refreshToken);
+        if (optionalToken.isEmpty()) {
+            throw new CustomException(ExceptionCode.REFRESH_TOKEN_NOT_FOUND);
+        }
+        return optionalToken.get().getKokoaId(); // 사용자 ID 반환
+    }
 }
