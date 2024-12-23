@@ -37,7 +37,7 @@ public class AuthRestController {
     public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto loginRequestDTO, HttpServletResponse response) {
 
         // 인증 처리
-        String[] tokens = authService.login(loginRequestDTO.getLoginId(), loginRequestDTO.getPassword());
+        String[] tokens = authService.login(loginRequestDTO.getLoginId(), loginRequestDTO.getPassword(), loginRequestDTO.isRememberMe());
         String accessToken = tokens[0];
         String refreshToken = tokens[1];
 
@@ -47,6 +47,7 @@ public class AuthRestController {
 
         // 로그인 성공한 사용자 정보 응답
         Member member = memberService.findByLoginId(loginRequestDTO.getLoginId());
+
         LoginResponseDto loginResponseDto = LoginResponseDto.builder()
                 .loginId(String.valueOf(member.getLoginId()))
                 .accessToken(accessToken)
@@ -61,7 +62,7 @@ public class AuthRestController {
     @PostMapping("/logout")
     public ResponseEntity<String> logout(HttpServletRequest request, HttpServletResponse response) {
         String refreshToken = cookieService.getCookieValue(request, "refreshToken");
-        log.info("refreshToken : " + refreshToken);
+        System.out.println("refreshToken : " + refreshToken);
         authService.logout(refreshToken);
 
         cookieService.deleteCookie(response, "accessToken");

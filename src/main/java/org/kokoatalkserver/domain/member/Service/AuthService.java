@@ -40,13 +40,15 @@ public class AuthService {
     }
 
     @Transactional
-    public String[] login(String userId, String password) {
+    public String[] login(String userId, String password, Boolean rememberMe) {
         Member member = memberRepository.findByLoginId(userId)
                 .orElseThrow(() -> new CustomException(ExceptionCode.MEMBER_NOT_FOUND));
 
         if (!passwordEncoder.matches(password, member.getPassword())) {
             throw new CustomException(ExceptionCode.PASSWORD_MISMATCH);
         }
+        member.rememberMe(rememberMe);
+        memberRepository.save(member);
 
         String accessToken = jwtTokenizer.createAccessToken(member.getKokoaId(), member.getLoginId(), member.getRole().name());
 

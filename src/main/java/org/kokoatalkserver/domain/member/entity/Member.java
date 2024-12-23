@@ -40,9 +40,12 @@ public class Member {
     @Column(name = "background_url")
     private String backgroundUrl;
 
+    @Column(name = "remember_me")
+    private Boolean rememberMe;
+
 
     @Builder
-    public Member(String loginId, String password, String bio, String profileUrl, String backgroundUrl, String nickname) {
+    public Member(String loginId, String password, String bio, String profileUrl, String backgroundUrl, String nickname, Boolean rememberMe) {
         this.loginId = loginId;
         this.password = password;
         this.role = Role.MEMBER;
@@ -51,6 +54,7 @@ public class Member {
         this.profileUrl = profileUrl != null ? profileUrl : "http://default.com/profile.jpg";
         this.backgroundUrl = backgroundUrl != null ? backgroundUrl : "http://default.com/background.jpg";
         this.nickname = nickname;
+        this.rememberMe = rememberMe != null ? rememberMe : false;
     }
 
 
@@ -60,6 +64,10 @@ public class Member {
         member.password = password;
         member.role = Role.MEMBER;
         return member;
+    }
+
+    public void rememberMe(Boolean rememberMe) {
+        this.rememberMe = rememberMe;
     }
 
 }
