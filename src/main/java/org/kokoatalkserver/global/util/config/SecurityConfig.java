@@ -77,6 +77,8 @@ public class SecurityConfig {
 
                     // 응답 처리
                     response.setStatus(HttpServletResponse.SC_OK);
+                    response.setContentType("application/json; charset=UTF-8");
+                    response.setCharacterEncoding("UTF-8");
                     response.getWriter().write("로그아웃 성공");
                     response.getWriter().flush();
                 })

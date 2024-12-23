@@ -16,8 +16,10 @@ import java.time.Instant;
 public class RefreshToken implements Serializable {
     @Id
     private String kokoaId;
+
     @Indexed
     private String refresh;
+
     private Instant expiration;
 
     @TimeToLive

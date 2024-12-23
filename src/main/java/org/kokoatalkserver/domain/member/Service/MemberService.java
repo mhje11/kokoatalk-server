@@ -14,7 +14,7 @@ public class MemberService {
 
     public Member findByLoginId(String loginId) {
         return memberRepository.findByLoginId(loginId).orElseThrow(() ->
-                new CustomException(ExceptionCode.MEMBER_NOT_FOUND));
+                new CustomException(ExceptionCode.ID_MISSMATCH));
     }
 
 }
