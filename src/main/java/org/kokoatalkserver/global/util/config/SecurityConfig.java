@@ -61,6 +61,8 @@ public class SecurityConfig {
                         .logoutUrl("/api/auth/logout")
                         .logoutSuccessHandler((request, response, authentication) -> {
                             response.setStatus(HttpServletResponse.SC_OK);
+                            response.setCharacterEncoding("UTF-8");
+                            response.getWriter().write("{\"message\": \"로그아웃되었습니다.\"}");
                         })
                         .deleteCookies("accessToken", "refreshToken")
                         .permitAll()

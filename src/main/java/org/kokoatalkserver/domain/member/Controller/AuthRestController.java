@@ -56,7 +56,7 @@ public class AuthRestController {
                 .profileUrl(member.getProfileUrl())
                 .backgroundUrl(member.getBackgroundUrl())
                 .build();
-        log.error("로그인 성공 : " + member.getLoginId());
+        log.info("로그인 성공 : " + member.getLoginId());
         return ResponseEntity.ok(loginResponseDto);
     }
     @PostMapping("/logout")
