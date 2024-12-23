@@ -49,6 +49,9 @@ public class AuthRestController {
                 .loginId(String.valueOf(member.getLoginId()))
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
+                .bio(member.getBio())
+                .profileUrl(member.getProfileUrl())
+                .backgroundUrl(member.getBackgroundUrl())
                 .build();
 
         return ResponseEntity.ok(loginResponseDto);

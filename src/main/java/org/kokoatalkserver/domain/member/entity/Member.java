@@ -33,8 +33,12 @@ public class Member {
     private Role role;
 
     private String bio;
-    private String profile_url;
-    private String background_url;
+
+    @Column(name = "profile_url")
+    private String profileUrl;
+
+    @Column(name = "background_url")
+    private String backgroundUrl;
 
 
     @Builder
@@ -44,8 +48,8 @@ public class Member {
         this.role = Role.MEMBER;
         this.friendCode = loginId;
         this.bio = bio != null ? bio : "상태 메시지를 적용해보세요";
-        this.profile_url = profileUrl != null ? profileUrl : "http://default.com/profile.jpg";
-        this.background_url = backgroundUrl != null ? backgroundUrl : "http://default.com/background.jpg";
+        this.profileUrl = profileUrl != null ? profileUrl : "http://default.com/profile.jpg";
+        this.backgroundUrl = backgroundUrl != null ? backgroundUrl : "http://default.com/background.jpg";
         this.nickname = nickname;
     }
 

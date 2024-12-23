@@ -9,13 +9,14 @@ public enum ExceptionCode {
      *  유저 관련
      */
     MEMBER_NOT_FOUND(404, HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다."),
+    ID_MISSMATCH(401, HttpStatus.UNAUTHORIZED, "아이디가 일치하지 않습니다."),
     EMAIL_NOT_FOUND(404, HttpStatus.NOT_FOUND, "존재하지 않는 이메일입니다."),
     EMAIL_ALREADY_EXISTS(400, HttpStatus.BAD_REQUEST, "이미 사용 중인 이메일입니다."),
     EMAIL_CODE_MISMATCH(400, HttpStatus.BAD_REQUEST, "이메일 인증번호가 일치하지 않습니다."),
-    PASSWORD_MISMATCH(400, HttpStatus.BAD_REQUEST, "비밀번호가 일치하지 않습니다."),
+    PASSWORD_MISMATCH(401, HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다."),
     EMAIL_SEND_FAILURE(500, HttpStatus.INTERNAL_SERVER_ERROR, "이메일 전송에 실패했습니다."),
     CANCEL_ACCOUNT(404, HttpStatus.NOT_FOUND, "탈퇴한 계정입니다."),
-    DUPLICATE_USER_ID(400, HttpStatus.BAD_REQUEST, "이미 존재하는 회원입니다."),
+    DUPLICATE_USER_ID(409, HttpStatus.BAD_REQUEST, "이미 존재하는 회원입니다."),
     INVALID_OAUTH2_PROVIDER(400, HttpStatus.BAD_REQUEST, "유효하지 않은 OAuth2 제공자입니다."),
     DELETED_ACCOUNT(404, HttpStatus.NOT_FOUND, "탈퇴한 계정입니다."),
 
