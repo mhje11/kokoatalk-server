@@ -32,7 +32,7 @@ public class SecurityConfig {
 
     String[] allAllowPage = new String[] {
             "/api/auth/signup", "/api/auth/signin",
-            "/api/auth/signout"
+            "/api/auth/signout", "/api/auth/refresh"
     };
 
     String[] authPage = new String[] {
