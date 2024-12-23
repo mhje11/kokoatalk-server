@@ -19,6 +19,7 @@ import java.util.Optional;
 public class RefreshTokenService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final JwtTokenizer jwtTokenizer;
+    private final RedisTemplate<String, RefreshToken> redisTemplate;
 
 
     //RefreshToken 저장
@@ -44,8 +45,13 @@ public class RefreshTokenService {
 
     @Transactional
     public void deleteRefreshToken(String refresh) {
-        refreshTokenRepository.deleteByRefresh(refresh);
-        log.info("Refresh token deleted successfully: {}", refresh);
+        String key = "refresh_token:" + refresh;
+        Boolean deleted = redisTemplate.delete(key);
+        if (Boolean.TRUE.equals(deleted)) {
+            log.info("리프레시 토큰이 정상적으로 삭제 됐습니다 : {}", key);
+        } else {
+            log.warn("리프레시 토큰 삭제 실패 : {}", key);
+        }
     }
 
     public String getUserIdFromRefreshToken(String refreshToken) {
