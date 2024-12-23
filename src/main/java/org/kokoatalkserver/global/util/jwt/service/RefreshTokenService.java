@@ -43,11 +43,7 @@ public class RefreshTokenService {
 
     @Transactional
     public void deleteRefreshToken(String refresh) {
-        int deletedCount = refreshTokenRepository.deleteByRefresh(refresh);
-        if (deletedCount == 0) {
-            log.warn("Refresh token not found or already deleted: {}", refresh);
-            throw new CustomException(ExceptionCode.REFRESH_TOKEN_NOT_FOUND);
-        }
+        refreshTokenRepository.deleteByRefresh(refresh);
         log.info("Refresh token deleted successfully: {}", refresh);
     }
 

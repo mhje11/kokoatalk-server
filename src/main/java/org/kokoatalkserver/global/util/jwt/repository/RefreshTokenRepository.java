@@ -9,5 +9,5 @@ public interface RefreshTokenRepository extends CrudRepository<RefreshToken, Str
     Optional<RefreshToken> findByRefresh(String value);
     Optional<RefreshToken> findByKokoaId(String kokoaId);
 
-    int deleteByRefresh(String refresh);
+    void deleteByRefresh(String refresh);
 }
