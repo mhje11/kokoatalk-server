@@ -45,7 +45,7 @@ public class RefreshTokenService {
 
     @Transactional
     public void deleteRefreshToken(String refresh) {
-        String key = "refresh_token:" + refresh;
+        String key = "refresh_token:refresh:" + refresh;
         Boolean deleted = redisTemplate.delete(key);
         if (Boolean.TRUE.equals(deleted)) {
             log.info("리프레시 토큰이 정상적으로 삭제 됐습니다 : {}", key);
