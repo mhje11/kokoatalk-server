@@ -56,11 +56,12 @@ public class AuthRestController {
                 .profileUrl(member.getProfileUrl())
                 .backgroundUrl(member.getBackgroundUrl())
                 .build();
-
+        log.error("로그인 성공 : " + member.getLoginId());
         return ResponseEntity.ok(loginResponseDto);
     }
     @PostMapping("/logout")
     public ResponseEntity<String> logout(HttpServletRequest request, HttpServletResponse response) {
+        log.error("로그아웃 메서드는 넘어옴");
         String refreshToken = cookieService.getCookieValue(request, "refreshToken");
         log.error("refreshToken : " + refreshToken);
         authService.logout(refreshToken);
