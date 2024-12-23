@@ -18,7 +18,6 @@ import java.util.Optional;
 @Slf4j
 public class RefreshTokenService {
     private final RefreshTokenRepository refreshTokenRepository;
-    private final RedisTemplate<String, Object> redisTemplate;
     private final JwtTokenizer jwtTokenizer;
 
 
