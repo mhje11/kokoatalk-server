@@ -31,8 +31,8 @@ public class SecurityConfig {
     private final RefreshTokenService refreshTokenService;
 
     String[] allAllowPage = new String[] {
-            "/api/auth/signup", "/api/auth/login",
-            "/api/auth/logout"
+            "/api/auth/signup", "/api/auth/signin",
+            "/api/auth/signout"
     };
 
     String[] authPage = new String[] {
@@ -57,7 +57,7 @@ public class SecurityConfig {
                         UsernamePasswordAuthenticationFilter.class);
 
         http.logout(logout -> logout
-                .logoutUrl("/api/auth/logout") // 로그아웃 URL
+                .logoutUrl("/api/auth/signout") // 로그아웃 URL
                 .logoutSuccessHandler((request, response, authentication) -> {
                     // 쿠키에서 refreshToken 가져오기
                     String refreshToken = null;

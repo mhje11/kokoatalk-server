@@ -8,6 +8,7 @@ import org.kokoatalkserver.domain.member.Service.AuthService;
 import org.kokoatalkserver.domain.member.Service.MemberService;
 import org.kokoatalkserver.domain.member.dto.LoginRequestDto;
 import org.kokoatalkserver.domain.member.dto.LoginResponseDto;
+import org.kokoatalkserver.domain.member.dto.MemberLoginResponseDto;
 import org.kokoatalkserver.domain.member.dto.SignUpRequestDto;
 import org.kokoatalkserver.domain.member.entity.Member;
 import org.kokoatalkserver.global.util.jwt.service.CookieService;
@@ -33,7 +34,7 @@ public class AuthRestController {
         return ResponseEntity.ok("회원가입 성공");
     }
 
-    @PostMapping("/login")
+    @PostMapping("/signin")
     public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto loginRequestDTO, HttpServletResponse response) {
 
         // 인증 처리
@@ -48,18 +49,16 @@ public class AuthRestController {
         // 로그인 성공한 사용자 정보 응답
         Member member = memberService.findByLoginId(loginRequestDTO.getLoginId());
 
+        MemberLoginResponseDto memberLoginResponseDto = new MemberLoginResponseDto(String.valueOf(member.getLoginId()), member.getNickname(), member.getProfileUrl(), member.getBackgroundUrl(), member.getBio());
         LoginResponseDto loginResponseDto = LoginResponseDto.builder()
-                .loginId(String.valueOf(member.getLoginId()))
+                .memberLoginResponseDto(memberLoginResponseDto)
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
-                .bio(member.getBio())
-                .profileUrl(member.getProfileUrl())
-                .backgroundUrl(member.getBackgroundUrl())
                 .build();
         log.info("로그인 성공 : " + member.getLoginId());
         return ResponseEntity.ok(loginResponseDto);
     }
-    @PostMapping("/logout")
+    @PostMapping("/signout")
     public ResponseEntity<String> logout(HttpServletRequest request, HttpServletResponse response) {
         log.error("로그아웃 메서드는 넘어옴");
         String refreshToken = cookieService.getCookieValue(request, "refreshToken");
