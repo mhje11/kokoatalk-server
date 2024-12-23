@@ -56,12 +56,33 @@ public class SecurityConfig {
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenizer, refreshTokenService),
                         UsernamePasswordAuthenticationFilter.class);
 
-        http
-                .logout(logout -> logout
-                        .logoutUrl("/api/auth/logout")
-                        .deleteCookies("accessToken", "refreshToken")
-                        .permitAll()
-                );
+        http.logout(logout -> logout
+                .logoutUrl("/api/auth/logout") // 로그아웃 URL
+                .logoutSuccessHandler((request, response, authentication) -> {
+                    // 쿠키에서 refreshToken 가져오기
+                    String refreshToken = null;
+                    if (request.getCookies() != null) {
+                        for (var cookie : request.getCookies()) {
+                            if ("refreshToken".equals(cookie.getName())) {
+                                refreshToken = cookie.getValue();
+                                break;
+                            }
+                        }
+                    }
+
+                    // 리프레시 토큰 삭제 로직
+                    if (refreshToken != null) {
+                        refreshTokenService.deleteRefreshToken(refreshToken);
+                    }
+
+                    // 응답 처리
+                    response.setStatus(HttpServletResponse.SC_OK);
+                    response.getWriter().write("로그아웃 성공");
+                    response.getWriter().flush();
+                })
+                .deleteCookies("accessToken", "refreshToken") // 쿠키 삭제
+                .permitAll()
+        );
         http
                 .requiresChannel(channel ->
                         channel.anyRequest().requiresSecure());
