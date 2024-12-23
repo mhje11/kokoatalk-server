@@ -3,6 +3,7 @@ package org.kokoatalkserver.global.util.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import io.github.cdimascio.dotenv.Dotenv;
 import org.kokoatalkserver.global.util.jwt.entity.RefreshToken;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -19,13 +20,12 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @Configuration
 public class RedisConfig {
 
-    @Value("${REDIS_HOST}")
-    private String redisHost;
+    private String redisHost = "kokoa";
 
-    @Value("${REDIS_PORT}")
-    private int redisPort;
-    @Value("${REDIS_PASSWORD}")
-    private String password;
+
+    private int redisPort = 6379;
+
+    private String password = "redispassword";
 
 
     @Bean
