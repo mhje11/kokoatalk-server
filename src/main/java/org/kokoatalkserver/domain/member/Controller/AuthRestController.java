@@ -38,7 +38,7 @@ public class AuthRestController {
     public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto loginRequestDTO, HttpServletResponse response) {
 
         // 인증 처리
-        String[] tokens = authService.login(loginRequestDTO.getLoginId(), loginRequestDTO.getPassword(), loginRequestDTO.isRememberMe());
+        String[] tokens = authService.login(loginRequestDTO.getAccountId(), loginRequestDTO.getPassword(), loginRequestDTO.isRememberMe());
         String accessToken = tokens[0];
         String refreshToken = tokens[1];
 
@@ -47,7 +47,7 @@ public class AuthRestController {
         cookieService.addCookie(response, "refreshToken", refreshToken, (int) (JwtTokenizer.REFRESH_TOKEN_EXPIRE_COUNT / 1000));
 
         // 로그인 성공한 사용자 정보 응답
-        Member member = memberService.findByLoginId(loginRequestDTO.getLoginId());
+        Member member = memberService.findByLoginId(loginRequestDTO.getAccountId());
 
         MemberLoginResponseDto memberLoginResponseDto = new MemberLoginResponseDto(String.valueOf(member.getLoginId()), member.getNickname(), member.getProfileUrl(), member.getBackgroundUrl(), member.getBio());
         LoginResponseDto loginResponseDto = LoginResponseDto.builder()
