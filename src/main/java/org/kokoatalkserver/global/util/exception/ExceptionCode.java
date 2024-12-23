@@ -19,6 +19,8 @@ public enum ExceptionCode {
     DUPLICATE_USER_ID(409, HttpStatus.BAD_REQUEST, "이미 존재하는 회원입니다."),
     INVALID_OAUTH2_PROVIDER(400, HttpStatus.BAD_REQUEST, "유효하지 않은 OAuth2 제공자입니다."),
     DELETED_ACCOUNT(404, HttpStatus.NOT_FOUND, "탈퇴한 계정입니다."),
+    VALIDATION_FAILED(400, HttpStatus.BAD_REQUEST, "유효하지 않은 형식입니다."),
+
 
     /**
      *  토근 관련

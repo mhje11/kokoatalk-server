@@ -2,6 +2,7 @@ package org.kokoatalkserver.domain.member.Controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.kokoatalkserver.domain.member.Service.AuthService;
@@ -35,7 +36,7 @@ public class AuthRestController {
     private final JwtTokenizer jwtTokenizer;
 
     @PostMapping("/signup")
-    public ResponseEntity<String> signup(@RequestBody SignUpRequestDto signUpRequestDto) {
+    public ResponseEntity<String> signup(@Valid @RequestBody SignUpRequestDto signUpRequestDto) {
         authService.signUp(signUpRequestDto);
         return ResponseEntity.ok("회원가입 성공");
     }
