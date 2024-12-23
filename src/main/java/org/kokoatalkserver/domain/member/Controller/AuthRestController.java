@@ -3,6 +3,7 @@ package org.kokoatalkserver.domain.member.Controller;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.kokoatalkserver.domain.member.Service.AuthService;
 import org.kokoatalkserver.domain.member.Service.MemberService;
 import org.kokoatalkserver.domain.member.dto.LoginRequestDto;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
+@Slf4j
 public class AuthRestController {
     private final AuthService authService;
     private final CookieService cookieService;
@@ -59,6 +61,7 @@ public class AuthRestController {
     @PostMapping("/logout")
     public ResponseEntity<String> logout(HttpServletRequest request, HttpServletResponse response) {
         String refreshToken = cookieService.getCookieValue(request, "refreshToken");
+        log.info("refreshToken : " + refreshToken);
         authService.logout(refreshToken);
 
         cookieService.deleteCookie(response, "accessToken");
