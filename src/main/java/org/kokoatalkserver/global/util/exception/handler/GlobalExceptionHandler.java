@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -27,14 +28,20 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
-        Map<String, String> errors = ex.getBindingResult().getFieldErrors().stream()
-                .collect(Collectors.toMap(
-                        FieldError::getField,         // 유효성 검증 실패 필드
-                        FieldError::getDefaultMessage // 에러 메시지
-                ));
+    public ResponseEntity<ValidationErrorResponse> handleValidationExceptions(MethodArgumentNotValidException ex) {
+        // 필드별 에러 메시지 수집
+        Map<String, String> fieldErrors = new HashMap<>();
+        for (FieldError error : ex.getBindingResult().getFieldErrors()) {
+            fieldErrors.put(error.getField(), error.getDefaultMessage());
+        }
 
-        throw new CustomException(ExceptionCode.VALIDATION_FAILED);
+        // 응답 생성
+        ValidationErrorResponse response = new ValidationErrorResponse(
+                ExceptionCode.VALIDATION_FAILED.getCode(),
+                ExceptionCode.VALIDATION_FAILED.getMessage(),
+                fieldErrors
+        );
+        return ResponseEntity.status(ExceptionCode.VALIDATION_FAILED.getHttpStatus()).body(response);
     }
 
     @ExceptionHandler(Exception.class)
@@ -61,5 +68,15 @@ public class GlobalExceptionHandler {
             this.message = message;
         }
 
+    }
+
+    @Getter
+    private static class ValidationErrorResponse extends ExceptionResponse {
+        private final Map<String, String> fieldErrors;
+
+        public ValidationErrorResponse(int code, String message, Map<String, String> fieldErrors) {
+            super(code, message);
+            this.fieldErrors = fieldErrors;
+        }
     }
 }
