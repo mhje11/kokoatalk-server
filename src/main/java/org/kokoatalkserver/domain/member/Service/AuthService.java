@@ -74,7 +74,7 @@ public class AuthService {
         if (refreshToken == null) {
             throw new CustomException(ExceptionCode.UNAUTHORIZED);
         }
-        refreshTokenService.deleteRefreshToken(refreshToken);
+        refreshTokenService.deleteAllRefreshTokenData(refreshToken);
     }
 
 }

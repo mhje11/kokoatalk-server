@@ -66,9 +66,7 @@ public class AuthRestController {
     }
     @PostMapping("/signout")
     public ResponseEntity<String> logout(HttpServletRequest request, HttpServletResponse response) {
-        log.error("로그아웃 메서드는 넘어옴");
         String refreshToken = cookieService.getCookieValue(request, "refreshToken");
-        log.error("refreshToken : " + refreshToken);
         authService.logout(refreshToken);
 
         cookieService.deleteCookie(response, "accessToken");

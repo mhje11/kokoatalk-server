@@ -54,11 +54,47 @@ public class RefreshTokenService {
         }
     }
 
+    @Transactional
+    public void deleteAllRefreshTokenData(String refresh) {
+        // refresh_token:refresh:<token> 삭제
+        String refreshKey = "refresh_token:refresh:" + refresh;
+        Boolean refreshDeleted = redisTemplate.delete(refreshKey);
+        if (Boolean.TRUE.equals(refreshDeleted)) {
+            log.info("리프레시 토큰 키 삭제 성공: {}", refreshKey);
+        } else {
+            log.warn("리프레시 토큰 키 삭제 실패: {}", refreshKey);
+        }
+
+        // refresh_token:<username>:idx 삭제
+        String userIdxKey = "refresh_token:" + extractUserIdFromRefreshToken(refresh) + ":idx";
+        Boolean userIdxDeleted = redisTemplate.delete(userIdxKey);
+        if (Boolean.TRUE.equals(userIdxDeleted)) {
+            log.info("리프레시 토큰 인덱스 삭제 성공: {}", userIdxKey);
+        } else {
+            log.warn("리프레시 토큰 인덱스 삭제 실패: {}", userIdxKey);
+        }
+
+        // refresh_token:<username> 해시 테이블 삭제
+        String hashKey = "refresh_token:" + extractUserIdFromRefreshToken(refresh);
+        Boolean hashDeleted = redisTemplate.delete(hashKey);
+        if (Boolean.TRUE.equals(hashDeleted)) {
+            log.info("리프레시 토큰 해시 삭제 성공: {}", hashKey);
+        } else {
+            log.warn("리프레시 토큰 해시 삭제 실패: {}", hashKey);
+        }
+    }
+
     public String getUserIdFromRefreshToken(String refreshToken) {
         Optional<RefreshToken> optionalToken = findByRefresh(refreshToken);
         if (optionalToken.isEmpty()) {
             throw new CustomException(ExceptionCode.REFRESH_TOKEN_NOT_FOUND);
         }
         return optionalToken.get().getKokoaId(); // 사용자 ID 반환
+    }
+
+    private String extractUserIdFromRefreshToken(String refreshToken) {
+        // RefreshToken에서 사용자 ID 추출 로직 구현
+        // 예: JWT를 디코드하여 사용자 ID를 가져오는 방식
+        return jwtTokenizer.extractUserIdFromRefreshToken(refreshToken);
     }
 }
