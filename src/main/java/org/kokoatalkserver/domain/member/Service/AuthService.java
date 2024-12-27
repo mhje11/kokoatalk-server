@@ -26,12 +26,12 @@ public class AuthService {
 
     @Transactional
     public void signUp(SignUpRequestDto signUpRequestDto) {
-        if(memberRepository.findByLoginId(signUpRequestDto.getLoginId()).isPresent()) {
+        if(memberRepository.findByLoginId(signUpRequestDto.getAccountId()).isPresent()) {
             throw new CustomException(ExceptionCode.DUPLICATE_USER_ID);
         }
 
         Member member = Member.builder()
-                .loginId(signUpRequestDto.getLoginId())
+                .loginId(signUpRequestDto.getAccountId())
                 .nickname(signUpRequestDto.getNickname())
                 .password(passwordEncoder.encode(signUpRequestDto.getPassword()))
                 .build();

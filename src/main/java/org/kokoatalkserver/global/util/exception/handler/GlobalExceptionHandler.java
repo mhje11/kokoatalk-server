@@ -33,7 +33,8 @@ public class GlobalExceptionHandler {
         // 필드별 에러 메시지 수집
         Map<String, String> fieldErrors = new LinkedHashMap<>();
         for (FieldError error : ex.getBindingResult().getFieldErrors()) {
-            fieldErrors.put(error.getField(), error.getDefaultMessage());
+            // 이미 존재하는 키가 없을 경우에만 추가
+            fieldErrors.putIfAbsent(error.getField(), error.getDefaultMessage());
         }
 
         // 응답 생성
