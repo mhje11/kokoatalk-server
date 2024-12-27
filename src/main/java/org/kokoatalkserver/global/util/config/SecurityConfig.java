@@ -72,7 +72,7 @@ public class SecurityConfig {
 
                     // 리프레시 토큰 삭제 로직
                     if (refreshToken != null) {
-                        refreshTokenService.deleteRefreshToken(refreshToken);
+                        refreshTokenService.deleteAllRefreshTokenData(refreshToken);
                     }
 
                     // 응답 처리
