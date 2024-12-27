@@ -93,8 +93,6 @@ public class RefreshTokenService {
     }
 
     private String extractUserIdFromRefreshToken(String refreshToken) {
-        // RefreshToken에서 사용자 ID 추출 로직 구현
-        // 예: JWT를 디코드하여 사용자 ID를 가져오는 방식
         return jwtTokenizer.extractUserIdFromRefreshToken(refreshToken);
     }
 }

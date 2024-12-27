@@ -143,7 +143,7 @@ public class JwtTokenizer {
     public String extractUserIdFromRefreshToken(String refreshToken) {
         try {
             Claims claims = parseRefreshToken(refreshToken);
-            return claims.getSubject(); // 사용자 ID는 subject로 저장되어야 합니다.
+            return claims.getSubject();
         } catch (Exception e) {
             log.error("Error extracting user ID from refresh token: {}", e.getMessage());
             throw new IllegalArgumentException("유효하지 않은 Refresh Token입니다.");
