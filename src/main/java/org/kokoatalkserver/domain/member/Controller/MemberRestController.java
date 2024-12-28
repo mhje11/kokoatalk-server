@@ -3,6 +3,7 @@ package org.kokoatalkserver.domain.member.Controller;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.kokoatalkserver.domain.member.Service.MemberService;
+import org.kokoatalkserver.domain.member.dto.BioUpdateDto;
 import org.kokoatalkserver.global.util.jwt.service.RefreshTokenService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -83,11 +84,11 @@ public class MemberRestController {
         String accountId = refreshTokenService.getUserIdFromRefreshToken(refreshToken);
         memberService.deleteBackgroundImage(accountId);
 
-        return ResponseEntity.ok("프로필 이미지 삭제 완료");
+        return ResponseEntity.ok("배경 이미지 삭제 완료");
     }
 
     @PutMapping("/update/bio")
-    public ResponseEntity<String> updateBio(HttpServletRequest request, String bio) {
+    public ResponseEntity<String> updateBio(HttpServletRequest request, BioUpdateDto bioUpdateDto) {
         String refreshToken = null;
         if (request.getCookies() != null) {
             for (var cookie : request.getCookies()) {
@@ -98,7 +99,7 @@ public class MemberRestController {
             }
         }
         String accountId = refreshTokenService.getUserIdFromRefreshToken(refreshToken);
-        memberService.updateBio(bio, accountId);
+        memberService.updateBio(bioUpdateDto.getBio(), accountId);
 
         return ResponseEntity.ok("자기소개 수정 완료");
     }
