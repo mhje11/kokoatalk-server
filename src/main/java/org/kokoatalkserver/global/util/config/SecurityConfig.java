@@ -36,7 +36,9 @@ public class SecurityConfig {
     };
 
     String[] authPage = new String[] {
-            "/api/file/upload/profileImage"
+            "/api/member/upload/profileImage", "/api/member/upload/backgroundImage",
+            "/api/member/delete/backgroundImage", "/api/member/delete/profileImage",
+            "/api/member/update/bio"
     };
 
     @Bean

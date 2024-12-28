@@ -52,7 +52,7 @@ public class Member {
         this.friendCode = loginId;
         this.bio = bio != null ? bio : "상태 메시지를 적용해보세요";
         this.profileUrl = profileUrl != null ? profileUrl : "https://kokoatalk-bucket.s3.ap-northeast-2.amazonaws.com/kokoatalk_default_image.png";
-        this.backgroundUrl = backgroundUrl != null ? backgroundUrl : "http://default.com/background.jpg";
+        this.backgroundUrl = backgroundUrl != null ? backgroundUrl : "https://kokoatalk-bucket.s3.ap-northeast-2.amazonaws.com/kokoatalk_background.jpg";
         this.nickname = nickname;
         this.rememberMe = rememberMe != null ? rememberMe : false;
     }
@@ -72,13 +72,27 @@ public class Member {
 
     public void updateProfileUrl(String profileUrl) {
         if (profileUrl == null || profileUrl.isBlank()) {
-            throw new IllegalArgumentException("프로필 URL은 비어 있을 수 없습니다.");
+            throw new IllegalArgumentException("프로필 이미지는 비어 있을 수 없습니다.");
         }
         this.profileUrl = profileUrl;
+    }
+    public void updateBackgroundUrl(String backgroundUrl) {
+        if (backgroundUrl == null || backgroundUrl.isBlank()) {
+            throw new IllegalArgumentException("배경 이미지는 비어 있을 수 없습니다.");
+        }
+        this.backgroundUrl = backgroundUrl;
     }
 
     public void updateBio(String bio) {
         this.bio = bio;
+    }
+
+    public void deleteProfileImage() {
+        this.profileUrl = "https://kokoatalk-bucket.s3.ap-northeast-2.amazonaws.com/kokoatalk_default_image.png";
+    }
+
+    public void deleteBackgroundImage() {
+        this.backgroundUrl = "https://kokoatalk-bucket.s3.ap-northeast-2.amazonaws.com/kokoatalk_background.jpg";
     }
 
 }

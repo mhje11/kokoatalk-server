@@ -1,7 +1,6 @@
 package org.kokoatalkserver.domain.member.Service;
 
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
@@ -51,6 +50,38 @@ public class MemberService {
         memberRepository.save(member);
     }
 
+    @Transactional
+    public void uploadBackgroundImage(MultipartFile multipartFile, String accountId) {
+        String backgroundUrl = uploadFile(multipartFile);
+        Optional<Member> memberOptional = memberRepository.findByLoginId(accountId);
+        Member member = memberOptional.orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
+        if (!member.getBackgroundUrl().equals("https://kokoatalk-bucket.s3.ap-northeast-2.amazonaws.com/kokoatalk_background.jpg")) {
+            deleteFileByUrl(member.getBackgroundUrl());
+        }
+        member.updateBackgroundUrl(backgroundUrl);
+        memberRepository.save(member);
+    }
+
+    @Transactional
+    public void deleteProfileImage(String accountId) {
+        Optional<Member> memberOptional = memberRepository.findByLoginId(accountId);
+        Member member = memberOptional.orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
+        String profileUrl = member.getProfileUrl();
+        deleteFileByUrl(profileUrl);
+        member.deleteProfileImage();
+        memberRepository.save(member);
+    }
+
+    @Transactional
+    public void deleteBackgroundImage(String accountId) {
+        Optional<Member> memberOptional = memberRepository.findByLoginId(accountId);
+        Member member = memberOptional.orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
+        String backgroundUrl = member.getBackgroundUrl();
+        deleteFileByUrl(backgroundUrl);
+        member.deleteBackgroundImage();
+        memberRepository.save(member);
+    }
+
     private String uploadFile(MultipartFile multipartFile) {
         if (multipartFile == null || multipartFile.isEmpty()) {
             return null;
@@ -82,7 +113,7 @@ public class MemberService {
         }
     }
 
-    public void deleteFileByUrl(String fileUrl) {
+    private void deleteFileByUrl(String fileUrl) {
         if (!fileUrl.contains(bucket)) {
             throw new IllegalArgumentException("잘못된 URL입니다. 버킷 이름이 일치하지 않습니다.");
         }
@@ -91,5 +122,13 @@ public class MemberService {
 
         amazonS3.deleteObject(new DeleteObjectRequest(bucket, fileName));
         log.info("S3에서 파일 삭제 : " + fileName);
+    }
+
+    @Transactional
+    public void updateBio(String bio, String accountId) {
+        Optional<Member> memberOptional = memberRepository.findByLoginId(accountId);
+        Member member = memberOptional.orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
+        member.updateBio(bio);
+        memberRepository.save(member);
     }
 }
