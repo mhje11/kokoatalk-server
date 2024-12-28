@@ -2,7 +2,7 @@ spring:
   datasource:
     url: jdbc:${JAWSDB_URL}
     username: ${JDBC_USERNAME}
-    password: ${JDBC_{PASSWORD}
+    password: ${JDBC_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
       connection-timeout: 30000
@@ -41,8 +41,8 @@ server:
 cloud:
   aws:
     credentials:
-      access-key:${ACCESS_KEY}
-      secret-key:${SECRET_KEY}
+      access-key: ${ACCESS_KEY}
+      secret-key: ${SECRET_KEY}
     region:
       static: ap-northeast-2
     s3:
