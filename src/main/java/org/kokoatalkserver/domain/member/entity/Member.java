@@ -51,7 +51,7 @@ public class Member {
         this.role = Role.MEMBER;
         this.friendCode = loginId;
         this.bio = bio != null ? bio : "상태 메시지를 적용해보세요";
-        this.profileUrl = profileUrl != null ? profileUrl : "http://default.com/profile.jpg";
+        this.profileUrl = profileUrl != null ? profileUrl : "https://kokoatalk-bucket.s3.ap-northeast-2.amazonaws.com/kokoatalk_default_image.png";
         this.backgroundUrl = backgroundUrl != null ? backgroundUrl : "http://default.com/background.jpg";
         this.nickname = nickname;
         this.rememberMe = rememberMe != null ? rememberMe : false;

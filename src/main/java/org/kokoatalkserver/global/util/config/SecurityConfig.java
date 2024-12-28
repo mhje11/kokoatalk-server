@@ -36,7 +36,7 @@ public class SecurityConfig {
     };
 
     String[] authPage = new String[] {
-
+            "/api/file/upload/profileImage"
     };
 
     @Bean

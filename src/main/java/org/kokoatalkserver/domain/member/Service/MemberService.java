@@ -41,10 +41,12 @@ public class MemberService {
 
     @Transactional
     public void uploadProfileImage(MultipartFile multipartFile, String accountId) {
-
         String profileUrl = uploadFile(multipartFile);
         Optional<Member> memberOptional = memberRepository.findByLoginId(accountId);
         Member member = memberOptional.orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
+        if (!member.getProfileUrl().equals("https://kokoatalk-bucket.s3.ap-northeast-2.amazonaws.com/kokoatalk_default_image.png")) {
+            deleteFileByUrl(member.getProfileUrl());
+        }
         member.updateProfileUrl(profileUrl);
         memberRepository.save(member);
     }
