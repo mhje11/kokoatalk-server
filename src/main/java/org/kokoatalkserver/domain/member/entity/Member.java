@@ -77,4 +77,8 @@ public class Member {
         this.profileUrl = profileUrl;
     }
 
+    public void updateBio(String bio) {
+        this.bio = bio;
+    }
+
 }
