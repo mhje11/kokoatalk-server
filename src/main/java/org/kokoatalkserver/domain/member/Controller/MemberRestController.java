@@ -6,10 +6,7 @@ import org.kokoatalkserver.domain.member.Service.MemberService;
 import org.kokoatalkserver.domain.member.dto.BioUpdateDto;
 import org.kokoatalkserver.global.util.jwt.service.RefreshTokenService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
@@ -88,7 +85,7 @@ public class MemberRestController {
     }
 
     @PutMapping("/update/bio")
-    public ResponseEntity<String> updateBio(HttpServletRequest request, BioUpdateDto bioUpdateDto) {
+    public ResponseEntity<String> updateBio(HttpServletRequest request, @RequestBody BioUpdateDto bioUpdateDto) {
         String refreshToken = null;
         if (request.getCookies() != null) {
             for (var cookie : request.getCookies()) {
