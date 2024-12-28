@@ -70,4 +70,11 @@ public class Member {
         this.rememberMe = rememberMe;
     }
 
+    public void updateProfileUrl(String profileUrl) {
+        if (profileUrl == null || profileUrl.isBlank()) {
+            throw new IllegalArgumentException("프로필 URL은 비어 있을 수 없습니다.");
+        }
+        this.profileUrl = profileUrl;
+    }
+
 }

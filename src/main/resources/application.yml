@@ -9,6 +9,10 @@ spring:
       idle-timeout: 60000
       max-lifetime: 1800000
       maximum-pool-size: 5
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
 
 
   jpa:
@@ -30,6 +34,20 @@ jwt:
   secretKey: ${JWT_SECRET_KEY}
   refreshKey: ${JWT_REFRESH_KEY}
 
+
 server:
   port: ${PORT:8080}
   forward-headers-strategy: native
+cloud:
+  aws:
+    credentials:
+      access-key:${ACCESS_KEY}
+      secret-key:${SECRET_KEY}
+    region:
+      static: ap-northeast-2
+    s3:
+      bucket: kokoatalk-bucket
+    stack:
+      auto: false
+
+
