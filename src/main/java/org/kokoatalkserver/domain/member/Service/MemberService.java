@@ -60,8 +60,7 @@ public class MemberService {
         objectMetadata.setContentType(multipartFile.getContentType());
 
         try (InputStream inputStream = multipartFile.getInputStream()){
-            amazonS3.putObject(new PutObjectRequest(bucket, fileName, inputStream, objectMetadata)
-                    .withCannedAcl(CannedAccessControlList.PublicRead));
+            amazonS3.putObject(new PutObjectRequest(bucket, fileName, inputStream, objectMetadata));
         } catch (IOException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드에 실패했습니다.");
         }
