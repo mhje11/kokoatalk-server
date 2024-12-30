@@ -12,6 +12,7 @@ import org.kokoatalkserver.domain.member.entity.Member;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Friend {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -47,7 +47,10 @@ public class FriendService {
             throw new CustomException(ExceptionCode.ALREADY_ADDED_FRIEND);
         }
 
-        Friend friendEntity = new Friend(member, friend);
+        Friend friendEntity = Friend.builder()
+                .member(member)
+                .friend(friend)
+                .build();
 
         friendRepository.save(friendEntity);
     }
@@ -57,7 +60,7 @@ public class FriendService {
         Optional<Member> memberOptional = memberRepository.findByLoginId(accountId);
         Member member = memberOptional.orElseThrow(() -> new CustomException(ExceptionCode.MEMBER_NOT_FOUND));
 
-        List<Friend> friendList = friendRepository.findAllByKokoaId(member.getKokoaId());
+        List<Friend> friendList = friendRepository.findAllByMember(member);
 
         return friendList.stream()
                 .map(friend -> FriendInfoDto.toDto(friend.getFriend()))
