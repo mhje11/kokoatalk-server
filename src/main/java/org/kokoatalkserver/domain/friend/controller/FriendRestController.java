@@ -2,6 +2,7 @@ package org.kokoatalkserver.domain.friend.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.kokoatalkserver.domain.friend.dto.FriendAddDto;
 import org.kokoatalkserver.domain.friend.dto.FriendInfoDto;
 import org.kokoatalkserver.domain.friend.dto.FriendSearchDto;
 import org.kokoatalkserver.domain.friend.service.FriendService;
@@ -25,9 +26,9 @@ public class FriendRestController {
 
     //친구추가
     @PostMapping("/add")
-    public ResponseEntity<String> addFriend(String friendCode, HttpServletRequest request) {
-        friendService.addFriend(request, friendCode);
-        return ResponseEntity.ok("친구 추가 완료, 친구 코드 : " + friendCode);
+    public ResponseEntity<String> addFriend(@RequestBody FriendAddDto friendAddDto, HttpServletRequest request) {
+        friendService.addFriend(request, friendAddDto.getFriendCode());
+        return ResponseEntity.ok("친구 추가 완료, 친구 코드 : " + friendAddDto.getFriendCode());
     }
 
     //친구리스트
