@@ -20,6 +20,8 @@ public enum ExceptionCode {
     INVALID_OAUTH2_PROVIDER(400, HttpStatus.BAD_REQUEST, "유효하지 않은 OAuth2 제공자입니다."),
     DELETED_ACCOUNT(404, HttpStatus.NOT_FOUND, "탈퇴한 계정입니다."),
     VALIDATION_FAILED(400, HttpStatus.BAD_REQUEST, "유효하지 않은 형식입니다."),
+    CANNOT_ADD_SELF(400, HttpStatus.BAD_REQUEST, "자기 자신을 친구로 추가 할 수 없습니다."),
+    ALREADY_ADDED_FRIEND(400, HttpStatus.BAD_REQUEST, "이미 추가된 친구 입니다."),
 
 
     /**
@@ -59,6 +61,15 @@ public enum ExceptionCode {
     CHAT_ROOM_NOT_FOUND(404, HttpStatus.NOT_FOUND, "채팅방을 찾을 수 없습니다."),
     CHATROOM_FULL(409, HttpStatus.CONFLICT, "채팅방이 가득 찼습니다."),
 
+
+    /**
+     * 파일 업로드 관련
+     */
+    FILE_UPLOAD_FAILED(500, HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드에 실패했습니다."),
+    FILE_DELETE_FAILED(500, HttpStatus.INTERNAL_SERVER_ERROR, "파일 삭제에 실패했습니다."),
+    INVALID_FILE_FORMAT(400, HttpStatus.BAD_REQUEST, "유효하지 않은 파일 형식입니다."),
+    INVALID_FILE_URL(400, HttpStatus.BAD_REQUEST, "잘못된 파일 URL입니다."),
+    CANNOT_DELETE_DEFAULT_IMAGE(400, HttpStatus.BAD_REQUEST, "기본 프로필 또는 배경 이미지는 삭제할 수 없습니다."),
 
     /**
      *  서버 관련

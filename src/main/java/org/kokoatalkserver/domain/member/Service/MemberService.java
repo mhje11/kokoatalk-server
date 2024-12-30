@@ -42,7 +42,8 @@ public class MemberService {
     public void uploadProfileImage(MultipartFile multipartFile, String accountId) {
         String profileUrl = uploadFile(multipartFile);
         Optional<Member> memberOptional = memberRepository.findByLoginId(accountId);
-        Member member = memberOptional.orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
+        Member member = memberOptional.orElseThrow(() -> new CustomException(ExceptionCode.MEMBER_NOT_FOUND));
+
         if (!member.getProfileUrl().equals("https://kokoatalk-bucket.s3.ap-northeast-2.amazonaws.com/kokoatalk_default_image.png")) {
             deleteFileByUrl(member.getProfileUrl());
         }
@@ -65,8 +66,12 @@ public class MemberService {
     @Transactional
     public void deleteProfileImage(String accountId) {
         Optional<Member> memberOptional = memberRepository.findByLoginId(accountId);
-        Member member = memberOptional.orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
+        Member member = memberOptional.orElseThrow(() -> new CustomException(ExceptionCode.MEMBER_NOT_FOUND));
+
         String profileUrl = member.getProfileUrl();
+        if (profileUrl.equals("https://kokoatalk-bucket.s3.ap-northeast-2.amazonaws.com/kokoatalk_default_image.png")) {
+            throw new CustomException(ExceptionCode.CANNOT_DELETE_DEFAULT_IMAGE);
+        }
         deleteFileByUrl(profileUrl);
         member.deleteProfileImage();
         memberRepository.save(member);
@@ -75,8 +80,12 @@ public class MemberService {
     @Transactional
     public void deleteBackgroundImage(String accountId) {
         Optional<Member> memberOptional = memberRepository.findByLoginId(accountId);
-        Member member = memberOptional.orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
+        Member member = memberOptional.orElseThrow(() -> new CustomException(ExceptionCode.MEMBER_NOT_FOUND));
+
         String backgroundUrl = member.getBackgroundUrl();
+        if (backgroundUrl.equals("https://kokoatalk-bucket.s3.ap-northeast-2.amazonaws.com/kokoatalk_background.jpg")) {
+            throw new CustomException(ExceptionCode.CANNOT_DELETE_DEFAULT_IMAGE);
+        }
         deleteFileByUrl(backgroundUrl);
         member.deleteBackgroundImage();
         memberRepository.save(member);
@@ -84,7 +93,7 @@ public class MemberService {
 
     private String uploadFile(MultipartFile multipartFile) {
         if (multipartFile == null || multipartFile.isEmpty()) {
-            return null;
+            throw new CustomException(ExceptionCode.INVALID_FILE_FORMAT);
         }
 
         String fileName = createFileName(multipartFile.getOriginalFilename());
@@ -95,7 +104,7 @@ public class MemberService {
         try (InputStream inputStream = multipartFile.getInputStream()){
             amazonS3.putObject(new PutObjectRequest(bucket, fileName, inputStream, objectMetadata));
         } catch (IOException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드에 실패했습니다.");
+            throw new CustomException(ExceptionCode.FILE_UPLOAD_FAILED);
         }
         return amazonS3.getUrl(bucket, fileName).toString();
     }
@@ -115,13 +124,18 @@ public class MemberService {
 
     private void deleteFileByUrl(String fileUrl) {
         if (!fileUrl.contains(bucket)) {
-            throw new IllegalArgumentException("잘못된 URL입니다. 버킷 이름이 일치하지 않습니다.");
+            throw new CustomException(ExceptionCode.INVALID_FILE_URL);
         }
 
         String fileName = fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
 
-        amazonS3.deleteObject(new DeleteObjectRequest(bucket, fileName));
-        log.info("S3에서 파일 삭제 : " + fileName);
+        try {
+            amazonS3.deleteObject(new DeleteObjectRequest(bucket, fileName));
+            log.info("S3에서 파일 삭제 : " + fileName);
+        } catch (Exception e) {
+            throw new CustomException(ExceptionCode.FILE_DELETE_FAILED);
+        }
+
     }
 
     @Transactional
@@ -131,4 +145,6 @@ public class MemberService {
         member.updateBio(bio);
         memberRepository.save(member);
     }
+
+
 }

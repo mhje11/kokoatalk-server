@@ -16,7 +16,7 @@ public class Member {
     @Column(name = "kokoa_id")
     private Long kokoaId;
 
-    @Column(name = "friend_code")
+    @Column(name = "friend_code", unique = true)
     private String friendCode;
 
     @Column(nullable = false, unique = true, name = "login_id")

@@ -1,5 +1,6 @@
 package org.kokoatalkserver.global.util.jwt.service;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.kokoatalkserver.global.util.exception.CustomException;
@@ -94,5 +95,19 @@ public class RefreshTokenService {
 
     private String extractUserIdFromRefreshToken(String refreshToken) {
         return jwtTokenizer.extractUserIdFromRefreshToken(refreshToken);
+    }
+
+    public String getAccountId(HttpServletRequest request) {
+        String refreshToken = null;
+        if (request.getCookies() != null) {
+            for (var cookie : request.getCookies()) {
+                if ("refreshToken".equals(cookie.getName())) {
+                    refreshToken = cookie.getValue();
+                    break;
+                }
+            }
+        }
+        String accountId = getUserIdFromRefreshToken(refreshToken);
+        return accountId;
     }
 }

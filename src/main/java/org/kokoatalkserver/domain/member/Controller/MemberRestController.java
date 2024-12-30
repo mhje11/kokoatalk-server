@@ -18,16 +18,7 @@ public class MemberRestController {
 
     @PutMapping("/upload/profileImage")
     public ResponseEntity<String> uploadProfileImage(MultipartFile multipartFile, HttpServletRequest request) {
-        String refreshToken = null;
-        if (request.getCookies() != null) {
-            for (var cookie : request.getCookies()) {
-                if ("refreshToken".equals(cookie.getName())) {
-                    refreshToken = cookie.getValue();
-                    break;
-                }
-            }
-        }
-        String accountId = refreshTokenService.getUserIdFromRefreshToken(refreshToken);
+        String accountId = refreshTokenService.getAccountId(request);
         memberService.uploadProfileImage(multipartFile, accountId);
 
         return ResponseEntity.ok("프로필 이미지 수정 완료");
@@ -35,16 +26,7 @@ public class MemberRestController {
 
     @PutMapping("/upload/backgroundImage")
     public ResponseEntity<String> uploadBackgroundImage(MultipartFile multipartFile, HttpServletRequest request) {
-        String refreshToken = null;
-        if (request.getCookies() != null) {
-            for (var cookie : request.getCookies()) {
-                if ("refreshToken".equals(cookie.getName())) {
-                    refreshToken = cookie.getValue();
-                    break;
-                }
-            }
-        }
-        String accountId = refreshTokenService.getUserIdFromRefreshToken(refreshToken);
+        String accountId = refreshTokenService.getAccountId(request);
         memberService.uploadBackgroundImage(multipartFile, accountId);
 
         return ResponseEntity.ok("배경 이미지 수정 완료");
@@ -52,16 +34,7 @@ public class MemberRestController {
 
     @PutMapping("/delete/profileImage")
     public ResponseEntity<String> deleteProfileImage(HttpServletRequest request) {
-        String refreshToken = null;
-        if (request.getCookies() != null) {
-            for (var cookie : request.getCookies()) {
-                if ("refreshToken".equals(cookie.getName())) {
-                    refreshToken = cookie.getValue();
-                    break;
-                }
-            }
-        }
-        String accountId = refreshTokenService.getUserIdFromRefreshToken(refreshToken);
+        String accountId = refreshTokenService.getAccountId(request);
         memberService.deleteProfileImage(accountId);
 
         return ResponseEntity.ok("프로필 이미지 삭제 완료");
@@ -69,16 +42,7 @@ public class MemberRestController {
 
     @PutMapping("/delete/backgroundImage")
     public ResponseEntity<String> deleteBackgroundImage(HttpServletRequest request) {
-        String refreshToken = null;
-        if (request.getCookies() != null) {
-            for (var cookie : request.getCookies()) {
-                if ("refreshToken".equals(cookie.getName())) {
-                    refreshToken = cookie.getValue();
-                    break;
-                }
-            }
-        }
-        String accountId = refreshTokenService.getUserIdFromRefreshToken(refreshToken);
+        String accountId = refreshTokenService.getAccountId(request);
         memberService.deleteBackgroundImage(accountId);
 
         return ResponseEntity.ok("배경 이미지 삭제 완료");
@@ -86,19 +50,12 @@ public class MemberRestController {
 
     @PutMapping("/update/bio")
     public ResponseEntity<String> updateBio(HttpServletRequest request, @RequestBody BioUpdateDto bioUpdateDto) {
-        String refreshToken = null;
-        if (request.getCookies() != null) {
-            for (var cookie : request.getCookies()) {
-                if ("refreshToken".equals(cookie.getName())) {
-                    refreshToken = cookie.getValue();
-                    break;
-                }
-            }
-        }
-        String accountId = refreshTokenService.getUserIdFromRefreshToken(refreshToken);
+        String accountId = refreshTokenService.getAccountId(request);
         memberService.updateBio(bioUpdateDto.getBio(), accountId);
 
         return ResponseEntity.ok("자기소개 수정 완료");
     }
+
+
 
 }
