@@ -16,6 +16,7 @@ public class FriendInfoDto {
     }
 
     private FriendInfoDto(String friendCode, String nickname, String profileImageUrl, String backgroundImageUrl, String bio) {
+        this.friendCode = friendCode;
         this.nickname = nickname;
         this.profileImageUrl = profileImageUrl;
         this.backgroundImageUrl = backgroundImageUrl;
