@@ -26,7 +26,7 @@ public class FriendRestController {
     }
 
     //친구추가
-    @PostMapping
+    @PostMapping("/add")
     public ResponseEntity<String> addFriend(String friendCode, HttpServletRequest request) {
         friendService.addFriend(request, friendCode);
         return ResponseEntity.ok("친구 추가 완료, 친구 코드 : " + friendCode);
