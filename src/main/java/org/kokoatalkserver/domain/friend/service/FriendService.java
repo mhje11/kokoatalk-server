@@ -2,7 +2,6 @@ package org.kokoatalkserver.domain.friend.service;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.kokoatalkserver.domain.friend.dto.FriendSearchDto;
 import org.kokoatalkserver.domain.friend.entity.Friend;
 import org.kokoatalkserver.domain.friend.repository.FriendRepository;
 import org.kokoatalkserver.domain.friend.dto.FriendInfoDto;
@@ -13,7 +12,6 @@ import org.kokoatalkserver.global.util.exception.ExceptionCode;
 import org.kokoatalkserver.global.util.jwt.service.RefreshTokenService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,8 +24,8 @@ public class FriendService {
     private final MemberRepository memberRepository;
     private final RefreshTokenService refreshTokenService;
 
-    public FriendInfoDto findByFriendCode(@RequestBody FriendSearchDto friendSearchDto) {
-        Optional<Member> optionalMember = memberRepository.findByFriendCode(friendSearchDto.getFriendCode());
+    public FriendInfoDto findByFriendCode(String friendCode) {
+        Optional<Member> optionalMember = memberRepository.findByFriendCode(friendCode);
         Member friend = optionalMember.orElseThrow(() -> new CustomException(ExceptionCode.MEMBER_NOT_FOUND));
         return FriendInfoDto.toDto(friend);
     }

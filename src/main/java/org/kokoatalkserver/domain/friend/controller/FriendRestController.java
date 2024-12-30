@@ -3,12 +3,10 @@ package org.kokoatalkserver.domain.friend.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.kokoatalkserver.domain.friend.dto.FriendInfoDto;
+import org.kokoatalkserver.domain.friend.dto.FriendSearchDto;
 import org.kokoatalkserver.domain.friend.service.FriendService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -20,8 +18,8 @@ public class FriendRestController {
 
     //친구검색
     @GetMapping("/search")
-    public ResponseEntity<FriendInfoDto> findFriend(String friendCode) {
-        FriendInfoDto friendInfoDto = friendService.findByFriendCode(friendCode);
+    public ResponseEntity<FriendInfoDto> findFriend(@RequestBody FriendSearchDto friendSearchDto) {
+        FriendInfoDto friendInfoDto = friendService.findByFriendCode(friendSearchDto.getFriendCode());
         return ResponseEntity.ok(friendInfoDto);
     }
 
