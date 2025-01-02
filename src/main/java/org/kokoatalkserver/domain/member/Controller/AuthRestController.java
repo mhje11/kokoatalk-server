@@ -56,11 +56,8 @@ public class AuthRestController {
         // 로그인 성공한 사용자 정보 응답
         Member member = memberService.findByLoginId(loginRequestDTO.getAccountId());
 
-        MemberLoginResponseDto memberLoginResponseDto = new MemberLoginResponseDto(String.valueOf(member.getLoginId()), member.getNickname(), member.getProfileUrl(), member.getBackgroundUrl(), member.getBio());
-        LoginResponseDto loginResponseDto = LoginResponseDto.builder()
-                .memberLoginResponseDto(memberLoginResponseDto)
-                .accessToken(accessToken)
-                .build();
+        MemberLoginResponseDto memberLoginResponseDto = MemberLoginResponseDto.createMemberLoginResponseDto(String.valueOf(member.getLoginId()), member.getNickname(), member.getProfileUrl(), member.getBackgroundUrl(), member.getBio());
+        LoginResponseDto loginResponseDto = LoginResponseDto.createLoginResponseDto(accessToken, memberLoginResponseDto);
         log.info("로그인 성공 : " + member.getLoginId());
         return ResponseEntity.ok(loginResponseDto);
     }

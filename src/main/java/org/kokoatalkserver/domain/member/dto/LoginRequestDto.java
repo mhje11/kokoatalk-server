@@ -1,12 +1,15 @@
 package org.kokoatalkserver.domain.member.dto;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Getter
-@RequiredArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class LoginRequestDto {
     private final String accountId;
     private final String password;
     private final boolean rememberMe;
+
 }
