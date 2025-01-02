@@ -27,7 +27,7 @@ public class FriendService {
     public FriendInfoDto findByFriendCode(String friendCode) {
         Optional<Member> optionalMember = memberRepository.findByFriendCode(friendCode);
         Member friend = optionalMember.orElseThrow(() -> new CustomException(ExceptionCode.MEMBER_NOT_FOUND));
-        return FriendInfoDto.toDto(friend);
+        return FriendInfoDto.fromMember(friend);
     }
 
     @Transactional
@@ -63,7 +63,7 @@ public class FriendService {
         List<Friend> friendList = friendRepository.findAllByMember(member);
 
         return friendList.stream()
-                .map(friend -> FriendInfoDto.toDto(friend.getFriend()))
+                .map(friend -> FriendInfoDto.fromMember(friend.getFriend()))
                 .collect(Collectors.toList());
     }
 }

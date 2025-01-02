@@ -1,25 +1,26 @@
 package org.kokoatalkserver.domain.friend.dto;
 
+import lombok.Builder;
 import lombok.Getter;
 import org.kokoatalkserver.domain.member.entity.Member;
 
 @Getter
+@Builder
 public class FriendInfoDto {
-    private String friendCode;
-    private String nickname;
-    private String profileImageUrl;
-    private String backgroundImageUrl;
-    private String bio;
+    private final String friendCode;
+    private final String nickname;
+    private final String profileImageUrl;
+    private final String backgroundImageUrl;
+    private final String bio;
 
-    public static FriendInfoDto toDto(Member member) {
-        return new FriendInfoDto(member.getFriendCode(), member.getNickname(), member.getProfileUrl(), member.getBackgroundUrl(), member.getBio());
+    public static FriendInfoDto fromMember(Member member) {
+        return FriendInfoDto.builder()
+                .friendCode(member.getFriendCode())
+                .nickname(member.getNickname())
+                .profileImageUrl(member.getProfileUrl())
+                .backgroundImageUrl(member.getBackgroundUrl())
+                .bio(member.getBio())
+                .build();
     }
 
-    private FriendInfoDto(String friendCode, String nickname, String profileImageUrl, String backgroundImageUrl, String bio) {
-        this.friendCode = friendCode;
-        this.nickname = nickname;
-        this.profileImageUrl = profileImageUrl;
-        this.backgroundImageUrl = backgroundImageUrl;
-        this.bio = bio;
-    }
 }

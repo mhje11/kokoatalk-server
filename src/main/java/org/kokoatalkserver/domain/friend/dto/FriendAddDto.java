@@ -4,7 +4,7 @@ import lombok.Getter;
 
 @Getter
 public class FriendAddDto {
-    private String friendCode;
+    private final String friendCode;
 
     public FriendAddDto(String friendCode) {
         this.friendCode = friendCode;
