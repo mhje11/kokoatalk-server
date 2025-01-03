@@ -39,7 +39,8 @@ public class SecurityConfig {
             "/api/member/upload/profileImage", "/api/member/upload/backgroundImage",
             "/api/member/delete/backgroundImage", "/api/member/delete/profileImage",
             "/api/member/update/bio", "/api/friend/search",
-            "/api/friend/add", "/api/friend/friendList"
+            "/api/friend/add", "/api/friend/friendList",
+            "/api/chatRoom/create", "/api/chatRoom/list", "/api/chatRoom/leave"
     };
 
     @Bean
