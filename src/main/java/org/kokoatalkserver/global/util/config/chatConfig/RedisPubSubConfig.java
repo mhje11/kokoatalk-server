@@ -22,6 +22,11 @@ public class RedisPubSubConfig {
         container.setConnectionFactory(connectionFactory);
         return container;
     }
+    @Bean
+    public MessageListenerAdapter listenerAdapter(ChatSubscriber chatSubscriber) {
+        return new MessageListenerAdapter(chatSubscriber, "handleMessage");
+    }
+
 
     @Bean
     public RedisTemplate<String, Object> redisTemplate() {
