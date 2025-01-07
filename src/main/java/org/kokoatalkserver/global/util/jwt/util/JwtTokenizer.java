@@ -150,5 +150,34 @@ public class JwtTokenizer {
         }
     }
 
+    public boolean validateToken(String token, byte[] secretKey) {
+        try {
+            Jwts.parserBuilder()
+                    .setSigningKey(getSigningKey(secretKey))
+                    .build()
+                    .parseClaimsJws(token);
+            return true; // 유효한 토큰
+        } catch (io.jsonwebtoken.ExpiredJwtException e) {
+            log.error("Token expired: {}", e.getMessage());
+            return false; // 만료된 토큰
+        } catch (io.jsonwebtoken.JwtException e) {
+            log.error("Invalid token: {}", e.getMessage());
+            return false; // 잘못된 토큰
+        }
+    }
+
+    /**
+     * AccessToken 유효성 검사
+     */
+    public boolean validateAccessToken(String accessToken) {
+        return validateToken(accessToken, accessSecret);
+    }
+
+    /**
+     * RefreshToken 유효성 검사
+     */
+    public boolean validateRefreshToken(String refreshToken) {
+        return validateToken(refreshToken, refreshSecret);
+    }
 
 }
