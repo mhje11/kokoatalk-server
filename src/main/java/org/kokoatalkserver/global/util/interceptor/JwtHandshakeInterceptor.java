@@ -21,23 +21,30 @@ public class JwtHandshakeInterceptor implements HandshakeInterceptor {
 
     @Override
     public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler, Map<String, Object> attributes) throws Exception {
+        log.debug("Attempting WebSocket handshake for URI: {}", request.getURI());
+
         String authHeader = request.getHeaders().getFirst("Authorization");
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             String token = authHeader.substring(7);
+            log.debug("Received Bearer Token: {}", token);
 
             if (jwtTokenizer.validateAccessToken(token)) {
                 Claims claims = jwtTokenizer.parseAccessToken(token);
                 Long userId = claims.get("id", Long.class);
-
                 attributes.put("userId", userId);
+                log.debug("Handshake successful for userId: {}", userId);
                 return true;
+            } else {
+                log.error("Invalid token provided for WebSocket handshake.");
             }
+        } else {
+            log.error("Missing or invalid Authorization header for WebSocket handshake.");
         }
 
         response.setStatusCode(HttpStatus.UNAUTHORIZED);
-        log.info("HandShake failed : UNAUTHORIZED");
         return false;
     }
+
 
     @Override
     public void afterHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler, Exception exception) {

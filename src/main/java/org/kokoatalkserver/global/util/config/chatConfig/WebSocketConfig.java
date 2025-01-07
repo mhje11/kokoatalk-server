@@ -26,10 +26,11 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws")
+                .setAllowedOrigins("*")
                 .addInterceptors(new JwtHandshakeInterceptor(jwtTokenizer))
-                .setAllowedOrigins("https://www.kokoatalk.shop", "https://api.kokoatalk.shop")
+//                .setAllowedOrigins("https://www.kokoatalk.shop", "https://api.kokoatalk.shop")
                 .withSockJS();
 
-        log.info("Websocket Endpont '/ws' registered.");
+        log.info("Websocket Endpoint '/ws' registered.");
     }
 }

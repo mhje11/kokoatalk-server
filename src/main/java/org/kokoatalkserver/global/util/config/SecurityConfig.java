@@ -49,6 +49,8 @@ public class SecurityConfig {
     public SecurityFilterChain webSocketSecurityFilterChain(HttpSecurity http) throws Exception{
         http
                 .securityMatcher("/ws/**")
+                .authorizeHttpRequests(auth -> auth
+                        .anyRequest().permitAll())
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
                 .headers(headers -> headers.frameOptions(frame -> frame.disable()));
