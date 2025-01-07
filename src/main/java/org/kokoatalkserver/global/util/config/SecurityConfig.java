@@ -65,6 +65,7 @@ public class SecurityConfig {
                 .sessionManagement((session) -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/ws/**").permitAll()
                         .requestMatchers(allAllowPage).permitAll()
                         .requestMatchers(authPage).authenticated()
                         .anyRequest().authenticated()

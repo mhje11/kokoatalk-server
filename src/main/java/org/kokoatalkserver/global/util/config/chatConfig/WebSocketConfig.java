@@ -1,6 +1,7 @@
 package org.kokoatalkserver.global.util.config.chatConfig;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.kokoatalkserver.global.util.interceptor.JwtHandshakeInterceptor;
 import org.kokoatalkserver.global.util.jwt.util.JwtTokenizer;
 import org.springframework.context.annotation.Configuration;
@@ -12,6 +13,7 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @Configuration
 @EnableWebSocketSecurity
 @RequiredArgsConstructor
+@Slf4j
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     private final JwtTokenizer jwtTokenizer;
 
@@ -27,5 +29,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                 .addInterceptors(new JwtHandshakeInterceptor(jwtTokenizer))
                 .setAllowedOrigins("https://www.kokoatalk.shop", "https://api.kokoatalk.shop")
                 .withSockJS();
+
+        log.info("Websocket Endpont '/ws' registered.");
     }
 }

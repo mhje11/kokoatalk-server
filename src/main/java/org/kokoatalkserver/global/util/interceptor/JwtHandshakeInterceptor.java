@@ -2,6 +2,7 @@ package org.kokoatalkserver.global.util.interceptor;
 
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.kokoatalkserver.global.util.jwt.util.JwtTokenizer;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.ServerHttpRequest;
@@ -14,6 +15,7 @@ import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class JwtHandshakeInterceptor implements HandshakeInterceptor {
     private final JwtTokenizer jwtTokenizer;
 
@@ -33,6 +35,7 @@ public class JwtHandshakeInterceptor implements HandshakeInterceptor {
         }
 
         response.setStatusCode(HttpStatus.UNAUTHORIZED);
+        log.info("HandShake failed : UNAUTHORIZED");
         return false;
     }
 
