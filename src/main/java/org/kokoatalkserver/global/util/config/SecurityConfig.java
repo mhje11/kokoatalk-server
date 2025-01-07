@@ -40,8 +40,7 @@ public class SecurityConfig {
             "/api/member/delete/backgroundImage", "/api/member/delete/profileImage",
             "/api/member/update/bio", "/api/friend/search",
             "/api/friend/add", "/api/friend/friendList",
-            "/api/chatRoom/create", "/api/chatRoom/list", "/api/chatRoom/leave",
-            "/ws/**", "/api/chat/**"
+            "/api/chatRoom/create", "/api/chatRoom/list", "/api/chatRoom/leave"
     };
 
     @Bean
@@ -54,6 +53,7 @@ public class SecurityConfig {
                 .sessionManagement((session) -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/ws/**").permitAll()
                         .requestMatchers(allAllowPage).permitAll()
                         .requestMatchers(authPage).authenticated()
                         .anyRequest().authenticated()
