@@ -8,6 +8,7 @@ import org.kokoatalkserver.global.util.jwt.service.RefreshTokenService;
 import org.kokoatalkserver.global.util.jwt.util.JwtTokenizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -44,6 +45,17 @@ public class SecurityConfig {
     };
 
     @Bean
+    @Order(1)
+    public SecurityFilterChain webSocketSecurityFilterChain(HttpSecurity http) throws Exception{
+        http
+                .securityMatcher("/ws/**")
+                .csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
+                .headers(headers -> headers.frameOptions(frame -> frame.disable()));
+        return http.build();
+    }
+
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
@@ -53,12 +65,10 @@ public class SecurityConfig {
                 .sessionManagement((session) -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/ws/**").permitAll()
                         .requestMatchers(allAllowPage).permitAll()
                         .requestMatchers(authPage).authenticated()
                         .anyRequest().authenticated()
                 )
-                .headers(headers -> headers.frameOptions().disable())
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenizer, refreshTokenService),
                         UsernamePasswordAuthenticationFilter.class);
 
