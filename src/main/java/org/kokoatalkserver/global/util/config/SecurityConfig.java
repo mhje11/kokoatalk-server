@@ -31,12 +31,12 @@ public class SecurityConfig {
     private final JwtTokenizer jwtTokenizer;
     private final RefreshTokenService refreshTokenService;
 
-    String[] allAllowPage = new String[] {
+    String[] allAllowPage = new String[]{
             "/api/auth/signup", "/api/auth/signin",
             "/api/auth/signout", "/api/auth/refresh"
     };
 
-    String[] authPage = new String[] {
+    String[] authPage = new String[]{
             "/api/member/upload/profileImage", "/api/member/upload/backgroundImage",
             "/api/member/delete/backgroundImage", "/api/member/delete/profileImage",
             "/api/member/update/bio", "/api/friend/search",
@@ -46,7 +46,7 @@ public class SecurityConfig {
 
     @Bean
     @Order(1)
-    public SecurityFilterChain webSocketSecurityFilterChain(HttpSecurity http) throws Exception{
+    public SecurityFilterChain webSocketSecurityFilterChain(HttpSecurity http) throws Exception {
         http
                 .securityMatcher("/ws/**")
                 .csrf(csrf -> csrf.disable())
@@ -105,7 +105,9 @@ public class SecurityConfig {
         );
         http
                 .requiresChannel(channel ->
-                        channel.anyRequest().requiresSecure());
+                        channel
+                                .requestMatchers("/ws/**").requiresInsecure()
+                                .anyRequest().requiresSecure());
         return http.build();
     }
 
@@ -113,12 +115,13 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
     }
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    public CorsConfigurationSource configurationSource(){
+    public CorsConfigurationSource configurationSource() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.addAllowedOrigin("https://www.kokoatalk.shop");
@@ -128,8 +131,8 @@ public class SecurityConfig {
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
         config.setAllowCredentials(true); // 쿠키 허용을 위해 필요
-        config.setAllowedMethods(List.of("GET","POST","DELETE", "PUT"));
-        source.registerCorsConfiguration("/**",config);
+        config.setAllowedMethods(List.of("GET", "POST", "DELETE", "PUT"));
+        source.registerCorsConfiguration("/**", config);
         return source;
     }
 }

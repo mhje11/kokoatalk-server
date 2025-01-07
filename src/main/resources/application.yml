@@ -1,8 +1,4 @@
 spring:
-  web:
-    mvc:
-      pathmatch:
-        matching-strategy: ant_path_matcher
   datasource:
     url: jdbc:${JAWSDB_URL}
     username: ${JDBC_USERNAME}
