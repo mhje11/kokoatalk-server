@@ -58,6 +58,7 @@ public class SecurityConfig {
                         .requestMatchers(authPage).authenticated()
                         .anyRequest().authenticated()
                 )
+                .headers(headers -> headers.frameOptions().disable())
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenizer, refreshTokenService),
                         UsernamePasswordAuthenticationFilter.class);
 
