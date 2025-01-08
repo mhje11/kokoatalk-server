@@ -44,17 +44,6 @@ public class SecurityConfig {
             "/api/chatRoom/create", "/api/chatRoom/list", "/api/chatRoom/leave"
     };
 
-    @Bean
-    @Order(1)
-    public SecurityFilterChain webSocketSecurityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .securityMatcher("/ws/**")
-                .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll())
-                .headers(headers -> headers.frameOptions(frame -> frame.disable()));
-        return http.build();
-    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -66,7 +55,6 @@ public class SecurityConfig {
                 .sessionManagement((session) -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/ws/**").permitAll()
                         .requestMatchers(allAllowPage).permitAll()
                         .requestMatchers(authPage).authenticated()
                         .anyRequest().authenticated()

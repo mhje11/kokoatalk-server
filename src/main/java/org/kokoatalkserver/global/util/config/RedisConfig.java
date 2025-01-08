@@ -3,6 +3,8 @@ package org.kokoatalkserver.global.util.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.kokoatalkserver.domain.chatRoom.entity.ChatRoom;
+import org.kokoatalkserver.global.util.config.chatConfig.RedisSubscriber;
 import org.kokoatalkserver.global.util.jwt.entity.RefreshToken;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -11,9 +13,11 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
@@ -33,6 +37,38 @@ public class RedisConfig {
         RedisStandaloneConfiguration config = new RedisStandaloneConfiguration(redisHost, redisPort);
         config.setPassword(password);
         return new LettuceConnectionFactory(config);
+    }
+    @Bean
+    public ChannelTopic channelTopic() {
+        return new ChannelTopic("chatroom");
+    }
+
+    @Bean
+    public RedisMessageListenerContainer redisMessage(MessageListenerAdapter listenerAdapterChatMessage, ChannelTopic channelTopic) {
+        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
+        container.setConnectionFactory(redisConnectionFactory());
+        container.addMessageListener(listenerAdapterChatMessage, channelTopic);
+        return container;
+    }
+
+    @Bean
+    public MessageListenerAdapter listenerAdapterChatMessage(RedisSubscriber subscriber) {
+        return new MessageListenerAdapter(subscriber, "onMessage");
+    }
+
+    @Bean
+    public RedisTemplate<String, Object> chatRoomRedisTemplate(RedisConnectionFactory connectionFactory) {
+        RedisTemplate<String, Object> template = new RedisTemplate<>();
+        template.setConnectionFactory(connectionFactory);
+
+        template.setKeySerializer(new StringRedisSerializer());
+        template.setHashKeySerializer(new StringRedisSerializer());
+
+        Jackson2JsonRedisSerializer<ChatRoom> serializer = new Jackson2JsonRedisSerializer<>(ChatRoom.class);
+        template.setValueSerializer(serializer);
+        template.setHashValueSerializer(serializer);
+
+        return template;
     }
 
 
@@ -55,16 +91,4 @@ public class RedisConfig {
         return redisTemplate;
     }
 
-    @Bean
-    public RedisTemplate<String, Object> generalRedisTemplate(RedisConnectionFactory connectionFactory) {
-        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
-        redisTemplate.setConnectionFactory(connectionFactory);
-
-        redisTemplate.setKeySerializer(new StringRedisSerializer());
-
-        redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
-        redisTemplate.setHashValueSerializer(new GenericJackson2JsonRedisSerializer());
-
-        return redisTemplate;
-    }
 }
