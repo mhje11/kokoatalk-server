@@ -28,7 +28,11 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         registry.addEndpoint("/ws-stomp")
                 .setAllowedOriginPatterns("*")
                 .addInterceptors(new AuthHandshakeInterceptor(jwtTokenizer))
-                .withSockJS();
+                .withSockJS()
+                .setStreamBytesLimit(512 * 1024)
+                .setSessionCookieNeeded(false)
+                .setDisconnectDelay(30 * 1000)
+                .setHeartbeatTime(25 * 1000);
     }
 
 }

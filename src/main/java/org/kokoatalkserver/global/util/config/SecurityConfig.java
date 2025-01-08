@@ -46,7 +46,7 @@ public class SecurityConfig {
 
 
     @Bean
-    @Order(1)
+    @Order(0)
     public SecurityFilterChain websocketSecurityFilterChain(HttpSecurity http) throws Exception {
         http
                 .securityMatcher("/ws-stomp/**") // WebSocket 경로
@@ -121,6 +121,7 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+    @Bean
     public CorsConfigurationSource configurationSource() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
