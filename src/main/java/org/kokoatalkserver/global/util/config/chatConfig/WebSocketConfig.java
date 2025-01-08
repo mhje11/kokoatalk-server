@@ -25,10 +25,10 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        log.info("Register stomp endpoint: /ws-stomp");
         registry.addEndpoint("/ws-stomp")
-                .setAllowedOrigins("*")
+                .setAllowedOrigins("https://www.kokoatalk.shop", "https://api.kokoatalk.shop")
                 .addInterceptors(new AuthHandshakeInterceptor(jwtTokenizer))
                 .withSockJS();
     }
+
 }
