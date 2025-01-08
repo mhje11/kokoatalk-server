@@ -33,6 +33,7 @@ public class AuthHandshakeInterceptor implements HandshakeInterceptor {
                 return false;
             }
         }
+        log.info("헤더 안넘어옴");
         return false;
     }
 
