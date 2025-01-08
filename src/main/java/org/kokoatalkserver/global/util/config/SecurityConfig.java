@@ -51,7 +51,9 @@ public class SecurityConfig {
         http
                 .securityMatcher("/ws-stomp/**") // WebSocket 경로
                 .csrf(csrf -> csrf.disable()) // CSRF 비활성화
-                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
+                .authorizeHttpRequests(auth -> auth
+                        .anyRequest().permitAll()
+                );
         return http.build();
     }
 
