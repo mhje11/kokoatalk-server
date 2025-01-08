@@ -27,7 +27,6 @@ import java.util.stream.Collectors;
 public class ChatRoomService {
     private final ChatRoomRepository chatRoomRepository;
     private final ChatRoomParticipantRepository chatRoomParticipantRepository;
-    private final ChatService chatService;
     private final MemberRepository memberRepository;
 
     @Transactional
@@ -47,7 +46,6 @@ public class ChatRoomService {
 
         chatRoomParticipantRepository.saveAll(participants);
 
-        chatService.joinRoom(String.valueOf(savedChatRoom.getId()));
     }
 
     public List<ChatRoomInfoDto> getRoomList(String accountId) {
@@ -83,7 +81,6 @@ public class ChatRoomService {
         // 남은 참가자 수 확인 및 방 삭제
         boolean hasParticipants = chatRoomParticipantRepository.existsByChatRoom(chatRoom);
         if (!hasParticipants) {
-            chatService.leaveRoom(String.valueOf(roomId));
             log.info("방삭제 : " + chatRoom.getRoomName());
             chatRoomRepository.delete(chatRoom);
             log.info("방삭제 성공");
