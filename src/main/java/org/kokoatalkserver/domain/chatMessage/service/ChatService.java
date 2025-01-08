@@ -25,8 +25,9 @@ public class ChatService {
     private final RedisPublisher redisPublisher;
     private final ChannelTopic channelTopic;
 
-    public void sendMessage(String accountId, String roomId, String message) {
-        Optional<Member> memberOptional = memberRepository.findByLoginId(accountId);
+    public void sendMessage(Long kokoaId, String roomId, String message) {
+
+        Optional<Member> memberOptional = memberRepository.findById(kokoaId);
         Member member = memberOptional.orElseThrow(() -> new CustomException(ExceptionCode.MEMBER_NOT_FOUND));
         ChatMessageSaveDto chatMessageSaveDto = ChatMessageSaveDto.createChatMessageSaveDto(roomId, member.getLoginId(), String.valueOf(member.getKokoaId()), message);
 

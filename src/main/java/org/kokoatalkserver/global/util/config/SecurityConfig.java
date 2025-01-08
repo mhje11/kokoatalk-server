@@ -46,6 +46,16 @@ public class SecurityConfig {
 
 
     @Bean
+    @Order(1)
+    public SecurityFilterChain websocketSecurityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .securityMatcher("/ws-stomp/**") // WebSocket 경로
+                .csrf(csrf -> csrf.disable()) // CSRF 비활성화
+                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
+        return http.build();
+    }
+
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())

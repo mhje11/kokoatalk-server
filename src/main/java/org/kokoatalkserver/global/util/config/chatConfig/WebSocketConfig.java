@@ -1,5 +1,8 @@
 package org.kokoatalkserver.global.util.config.chatConfig;
 
+import lombok.RequiredArgsConstructor;
+import org.kokoatalkserver.global.util.interceptor.AuthHandshakeInterceptor;
+import org.kokoatalkserver.global.util.jwt.util.JwtTokenizer;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
@@ -8,8 +11,10 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 
 @Configuration
 @EnableWebSocketMessageBroker
+@RequiredArgsConstructor
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
+    private final JwtTokenizer jwtTokenizer;
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
         registry.enableSimpleBroker("/sub");
@@ -18,6 +23,9 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/ws-stomp").setAllowedOrigins("*").withSockJS();
+        registry.addEndpoint("/ws-stomp")
+                .setAllowedOrigins("*")
+                .addInterceptors(new AuthHandshakeInterceptor(jwtTokenizer))
+                .withSockJS();
     }
 }
