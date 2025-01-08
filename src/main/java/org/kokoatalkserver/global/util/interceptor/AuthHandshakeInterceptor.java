@@ -18,6 +18,8 @@ public class AuthHandshakeInterceptor implements HandshakeInterceptor {
 
     @Override
     public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler, Map<String, Object> attributes) throws Exception {
+        log.info("핸드쉐이크 인터셉터 탔음");
+        log.info("Incoming Websocket request : {}", request.getURI());
         String token = request.getHeaders().getFirst("Authorization");
         if (token != null && token.startsWith("Bearer ")) {
             try {

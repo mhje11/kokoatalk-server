@@ -19,7 +19,6 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class ChatController {
     private final ChatService chatService;
-    private final RefreshTokenService refreshTokenService;
 
     @MessageMapping("/chat/send")
     @SendTo("/sub/chat/room/{roomId}")
