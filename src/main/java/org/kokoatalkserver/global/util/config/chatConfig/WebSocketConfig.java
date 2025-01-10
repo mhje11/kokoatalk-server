@@ -26,13 +26,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws-stomp")
-                .setAllowedOriginPatterns("*")
-                .addInterceptors(new AuthHandshakeInterceptor(jwtTokenizer))
-                .withSockJS()
-                .setStreamBytesLimit(512 * 1024)
-                .setSessionCookieNeeded(false)
-                .setDisconnectDelay(30 * 1000)
-                .setHeartbeatTime(25 * 1000);
+                .setAllowedOriginPatterns("*");
     }
 
 }
