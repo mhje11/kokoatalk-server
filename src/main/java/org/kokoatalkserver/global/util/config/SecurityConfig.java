@@ -50,6 +50,7 @@ public class SecurityConfig {
     public SecurityFilterChain websocketSecurityFilterChain(HttpSecurity http) throws Exception {
         http
                 .securityMatcher("/ws-stomp/**") // WebSocket 경로
+                .cors(cors -> cors.configurationSource(configurationSource()))
                 .csrf(csrf -> csrf.disable()) // CSRF 비활성화
                 .authorizeHttpRequests(auth -> auth
                         .anyRequest().permitAll()
