@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
 public class FriendService {
     private final FriendRepository friendRepository;
     private final MemberRepository memberRepository;
-    private final RefreshTokenService refreshTokenService;
 
     public FriendInfoDto findByFriendCode(String friendCode) {
         Optional<Member> optionalMember = memberRepository.findByFriendCode(friendCode);
@@ -56,9 +55,8 @@ public class FriendService {
         friendRepository.save(friendEntity);
     }
 
-    public List<FriendInfoDto> getFriendList(HttpServletRequest request) {
-        String accountId = refreshTokenService.getAccountId(request);
-        Optional<Member> memberOptional = memberRepository.findByLoginId(accountId);
+    public List<FriendInfoDto> getFriendList(CustomUserDetails customUserDetails) {
+        Optional<Member> memberOptional = memberRepository.findByLoginId(customUserDetails.getUserId());
         Member member = memberOptional.orElseThrow(() -> new CustomException(ExceptionCode.MEMBER_NOT_FOUND));
 
         List<Friend> friendList = friendRepository.findAllByMember(member);

@@ -6,8 +6,10 @@ import org.kokoatalkserver.domain.chatRoom.dto.ChatRoomCreateDto;
 import org.kokoatalkserver.domain.chatRoom.dto.ChatRoomInfoDto;
 import org.kokoatalkserver.domain.chatRoom.dto.ChatRoomLeaveDto;
 import org.kokoatalkserver.domain.chatRoom.service.ChatRoomService;
+import org.kokoatalkserver.global.util.jwt.service.CustomUserDetails;
 import org.kokoatalkserver.global.util.jwt.service.RefreshTokenService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,16 +28,14 @@ public class ChatRoomRestController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<List<ChatRoomInfoDto>> getChatRoomList(HttpServletRequest request) {
-        String accountId = refreshTokenService.getAccountId(request);
-        List<ChatRoomInfoDto> roomList = chatRoomService.getRoomList(accountId);
+    public ResponseEntity<List<ChatRoomInfoDto>> getChatRoomList(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        List<ChatRoomInfoDto> roomList = chatRoomService.getRoomList(customUserDetails.getUserId());
         return ResponseEntity.ok(roomList);
     }
 
     @PostMapping("/leave")
-    public ResponseEntity<String> leaveRoom(HttpServletRequest request, @RequestBody ChatRoomLeaveDto chatRoomLeaveDto) {
-        String accountId = refreshTokenService.getAccountId(request);
-        chatRoomService.leaveRoom(accountId, chatRoomLeaveDto.getRoomId());
+    public ResponseEntity<String> leaveRoom(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody ChatRoomLeaveDto chatRoomLeaveDto) {
+        chatRoomService.leaveRoom(customUserDetails.getUserId(), chatRoomLeaveDto.getRoomId());
         return ResponseEntity.ok("방 떠나기 성공");
     }
 }

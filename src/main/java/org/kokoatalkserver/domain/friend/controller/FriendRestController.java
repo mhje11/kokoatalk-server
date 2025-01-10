@@ -35,8 +35,8 @@ public class FriendRestController {
 
     //친구리스트
     @GetMapping("/friendList")
-    public ResponseEntity<List<FriendInfoDto>> findFriendList(HttpServletRequest request) {
-        List<FriendInfoDto> friendList = friendService.getFriendList(request);
+    public ResponseEntity<List<FriendInfoDto>> findFriendList(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        List<FriendInfoDto> friendList = friendService.getFriendList(customUserDetails);
         return ResponseEntity.ok(friendList);
     }
 
