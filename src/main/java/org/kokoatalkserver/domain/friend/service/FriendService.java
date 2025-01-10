@@ -9,6 +9,7 @@ import org.kokoatalkserver.domain.member.entity.Member;
 import org.kokoatalkserver.domain.member.repository.MemberRepository;
 import org.kokoatalkserver.global.util.exception.CustomException;
 import org.kokoatalkserver.global.util.exception.ExceptionCode;
+import org.kokoatalkserver.global.util.jwt.service.CustomUserDetails;
 import org.kokoatalkserver.global.util.jwt.service.RefreshTokenService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,9 +32,9 @@ public class FriendService {
     }
 
     @Transactional
-    public void addFriend(HttpServletRequest request, String friendCode) {
-        String myAccountId = refreshTokenService.getAccountId(request);
-        Optional<Member> memberOptional = memberRepository.findByLoginId(myAccountId);
+    public void addFriend(CustomUserDetails customUserDetails, String friendCode) {
+        String accountId = customUserDetails.getUserId();
+        Optional<Member> memberOptional = memberRepository.findByLoginId(accountId);
         Member member = memberOptional.orElseThrow(() -> new CustomException(ExceptionCode.MEMBER_NOT_FOUND));
 
         Optional<Member> friendOptional = memberRepository.findByFriendCode(friendCode);

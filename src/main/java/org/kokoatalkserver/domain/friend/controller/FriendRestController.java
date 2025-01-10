@@ -6,7 +6,9 @@ import org.kokoatalkserver.domain.friend.dto.FriendAddDto;
 import org.kokoatalkserver.domain.friend.dto.FriendInfoDto;
 import org.kokoatalkserver.domain.friend.dto.FriendSearchDto;
 import org.kokoatalkserver.domain.friend.service.FriendService;
+import org.kokoatalkserver.global.util.jwt.service.CustomUserDetails;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,8 +28,8 @@ public class FriendRestController {
 
     //친구추가
     @PostMapping("/add")
-    public ResponseEntity<String> addFriend(@RequestBody FriendAddDto friendAddDto, HttpServletRequest request) {
-        friendService.addFriend(request, friendAddDto.getFriendCode());
+    public ResponseEntity<String> addFriend(@RequestBody FriendAddDto friendAddDto, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        friendService.addFriend(customUserDetails, friendAddDto.getFriendCode());
         return ResponseEntity.ok("친구 추가 완료, 친구 코드 : " + friendAddDto.getFriendCode());
     }
 
