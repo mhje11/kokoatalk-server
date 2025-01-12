@@ -28,7 +28,7 @@ public class ChatService {
 
         Optional<Member> memberOptional = memberRepository.findById(kokoaId);
         Member member = memberOptional.orElseThrow(() -> new CustomException(ExceptionCode.MEMBER_NOT_FOUND));
-        ChatMessageSaveDto chatMessageSaveDto = ChatMessageSaveDto.createChatMessageSaveDto(roomId, member.getLoginId(), String.valueOf(member.getKokoaId()), message);
+        ChatMessageSaveDto chatMessageSaveDto = ChatMessageSaveDto.createChatMessageSaveDto(roomId, String.valueOf(member.getKokoaId()), member.getNickname(), message);
 
         ChatMessageRedis chatMessageRedis = ChatMessageRedis.builder()
                 .id(UUID.randomUUID().toString())
@@ -37,6 +37,7 @@ public class ChatService {
                 .senderName(chatMessageSaveDto.getSenderNickname())
                 .message(chatMessageSaveDto.getMessage())
                 .created_at(LocalDateTime.now())
+                .ttl(604800L)
                 .build();
 
         chatMessageService.saveMessage(roomId, chatMessageRedis);
