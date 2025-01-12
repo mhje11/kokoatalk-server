@@ -22,6 +22,12 @@ public class AuthHandshakeInterceptor implements HandshakeInterceptor {
         log.info("핸드쉐이크 인터셉터 탔음");
         log.info("Incoming Websocket request : {}", request.getURI());
         String token = request.getHeaders().getFirst("Authorization");
+        log.info("token from Header : {}", token);
+        if (token == null) {
+            String stompAuth = (String) attributes.get("simpConnectMessageHeaders.Authorization");
+            token = stompAuth;
+            log.info("token from stompHeader : {}", stompAuth);
+        }
         if (token != null && token.startsWith("Bearer ")) {
             try {
                 String jwt = token.substring(7);
