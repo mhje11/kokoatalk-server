@@ -19,7 +19,6 @@ import java.util.List;
 @RequestMapping("/api/chatRoom")
 public class ChatRoomRestController {
     private final ChatRoomService chatRoomService;
-    private final RefreshTokenService refreshTokenService;
 
     @PostMapping("/create")
     public ResponseEntity<String> createChatRoom(@RequestBody ChatRoomCreateDto chatRoomCreateDto) {

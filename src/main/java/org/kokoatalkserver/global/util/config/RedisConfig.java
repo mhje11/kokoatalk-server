@@ -14,6 +14,7 @@ import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
+import org.springframework.data.redis.listener.PatternTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
@@ -38,18 +39,18 @@ public class RedisConfig {
         config.setPassword(password);
         return new LettuceConnectionFactory(config);
     }
-    @Bean
-    public ChannelTopic channelTopic() {
-        return new ChannelTopic("chatroom");
-    }
 
     @Bean
-    public RedisMessageListenerContainer redisMessage(MessageListenerAdapter listenerAdapterChatMessage, ChannelTopic channelTopic) {
+    public RedisMessageListenerContainer redisMessageListenerContainer(RedisConnectionFactory connectionFactory, RedisSubscriber subscriber) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
-        container.setConnectionFactory(redisConnectionFactory());
-        container.addMessageListener(listenerAdapterChatMessage, channelTopic);
+        container.setConnectionFactory(connectionFactory);
+
+        // PatternTopic 사용으로 동적 채널 구독 지원
+        container.addMessageListener(new MessageListenerAdapter(subscriber, "onMessage"), new PatternTopic("chat.room.*"));
+
         return container;
     }
+
 
     @Bean
     public MessageListenerAdapter listenerAdapterChatMessage(RedisSubscriber subscriber) {

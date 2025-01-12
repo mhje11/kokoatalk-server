@@ -23,7 +23,6 @@ public class ChatService {
     private final ChatMessageService chatMessageService;
     private final MemberRepository memberRepository;
     private final RedisPublisher redisPublisher;
-    private final ChannelTopic channelTopic;
 
     public void sendMessage(Long kokoaId, String roomId, String message) {
 
@@ -42,6 +41,7 @@ public class ChatService {
 
         chatMessageService.saveMessage(roomId, chatMessageRedis);
 
+        ChannelTopic channelTopic = new ChannelTopic("chat.room." + roomId);
         redisPublisher.publish(channelTopic, chatMessageRedis);
     }
 }

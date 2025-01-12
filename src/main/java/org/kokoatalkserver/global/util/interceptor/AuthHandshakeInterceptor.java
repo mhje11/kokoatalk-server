@@ -9,6 +9,7 @@ import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.server.HandshakeInterceptor;
 
+import java.security.Principal;
 import java.util.Map;
 
 @RequiredArgsConstructor
@@ -27,7 +28,8 @@ public class AuthHandshakeInterceptor implements HandshakeInterceptor {
                 Claims claims = jwtTokenizer.parseAccessToken(jwt);
                 Long userId = claims.get("id", Long.class);
                 log.info("user kokoaId : {}", userId);
-                attributes.put("userId", userId);
+
+                attributes.put("principal", new WebSocketPrincipal(String.valueOf(userId)));
                 return true;
             } catch (Exception e) {
                 return false;
@@ -40,5 +42,18 @@ public class AuthHandshakeInterceptor implements HandshakeInterceptor {
     @Override
     public void afterHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler, Exception exception) {
 
+    }
+
+    private static class WebSocketPrincipal implements Principal {
+        private final String name;
+
+        public WebSocketPrincipal(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public String getName() {
+            return name;
+        }
     }
 }

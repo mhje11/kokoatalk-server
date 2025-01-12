@@ -54,7 +54,8 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable()) // CSRF 비활성화
                 .authorizeHttpRequests(auth -> auth
                         .anyRequest().permitAll()
-                );
+                )
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenizer, refreshTokenService), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
