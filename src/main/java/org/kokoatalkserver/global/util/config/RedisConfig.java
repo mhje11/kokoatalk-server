@@ -65,6 +65,11 @@ public class RedisConfig {
         RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(connectionFactory);
 
+        PolymorphicTypeValidator typeValidator = BasicPolymorphicTypeValidator
+                .builder()
+                .allowIfSubType(Object.class)
+                .build();
+
         // ObjectMapper 설정
         ObjectMapper objectMapper = new ObjectMapper()
                 .registerModule(new JavaTimeModule())
