@@ -2,6 +2,7 @@ package org.kokoatalkserver.global.util.config.chatConfig;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.kokoatalkserver.global.util.handler.CustomPrincipalHandshakeHandler;
 import org.kokoatalkserver.global.util.interceptor.AuthHandshakeInterceptor;
 import org.kokoatalkserver.global.util.jwt.util.JwtTokenizer;
 import org.springframework.context.annotation.Configuration;
@@ -27,7 +28,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws-stomp")
                 .setAllowedOriginPatterns("*")
-                .addInterceptors(new AuthHandshakeInterceptor( jwtTokenizer));
+                .addInterceptors(new AuthHandshakeInterceptor( jwtTokenizer))
+                .setHandshakeHandler(new CustomPrincipalHandshakeHandler());
     }
 
 }
