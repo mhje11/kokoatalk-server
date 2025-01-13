@@ -27,7 +27,7 @@ public class RedisSubscriber implements MessageListener {
             ChatMessageRedis roomMessage = objectMapper.readValue(publishMessage, ChatMessageRedis.class);
             log.info("Deserialized message : {}", roomMessage.getMessage());
 
-            messagingTemplate.convertAndSend("/sub/chat/room" + roomMessage.getRoomId(), roomMessage);
+            messagingTemplate.convertAndSend("/sub/chat/room/" + roomMessage.getRoomId(), roomMessage);
         } catch (Exception e) {
             log.error(e.getMessage());
         }
