@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.kokoatalkserver.domain.chatMessage.dto.ChatMessageScrollDto;
 import org.kokoatalkserver.domain.chatMessage.entity.ChatMessageRedis;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +19,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Slf4j
 public class ChatMessageService {
-    private final RedisTemplate<String, Object> redisTemplate;
+    @Qualifier("chatRoomRedisTemplate")
+    private final RedisTemplate<String, ChatMessageRedis> redisTemplate;
 
     public void saveMessage(String roomId, ChatMessageRedis message) {
         String key = "chat:room:" + roomId;
@@ -34,7 +36,7 @@ public class ChatMessageService {
     public List<ChatMessageScrollDto> getMessageFromRedis(String roomId, LocalDateTime lastCreatedAt, int size) {
         String redisKey = "chat:room:" + roomId;
 
-        List<Object> redisMessages = redisTemplate.opsForList().range(redisKey, 0, -1);
+        List<ChatMessageRedis> redisMessages = redisTemplate.opsForList().range(redisKey, 0, -1);
 
         if (redisMessages == null || redisMessages.isEmpty()) {
             return Collections.emptyList();

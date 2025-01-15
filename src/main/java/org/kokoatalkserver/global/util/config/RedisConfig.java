@@ -10,6 +10,7 @@ import org.kokoatalkserver.domain.chatMessage.entity.ChatMessageRedis;
 import org.kokoatalkserver.domain.chatRoom.entity.ChatRoom;
 import org.kokoatalkserver.global.util.config.chatConfig.RedisSubscriber;
 import org.kokoatalkserver.global.util.jwt.entity.RefreshToken;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -79,11 +80,15 @@ public class RedisConfig {
     }
 
     @Bean
+    @Qualifier("chatRoomRedisTemplate")
     public RedisTemplate<String, ChatMessageRedis> chatRoomRedisTemplate(RedisConnectionFactory connectionFactory) {
         RedisTemplate<String, ChatMessageRedis> template = new RedisTemplate<>();
         template.setConnectionFactory(connectionFactory);
 
-
+        PolymorphicTypeValidator typeValidator = BasicPolymorphicTypeValidator
+                .builder()
+                .allowIfSubType(Object.class)
+                .build();
 
         // ObjectMapper 설정
         ObjectMapper objectMapper = new ObjectMapper()
@@ -91,10 +96,7 @@ public class RedisConfig {
                 .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
                 .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 
-        PolymorphicTypeValidator typeValidator = BasicPolymorphicTypeValidator
-                .builder()
-                .allowIfSubType(Object.class)
-                .build();
+
         objectMapper.activateDefaultTyping(typeValidator, ObjectMapper.DefaultTyping.NON_FINAL);
 
         // 직렬화기 설정
