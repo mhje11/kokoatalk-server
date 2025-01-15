@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
 import com.fasterxml.jackson.databind.jsontype.PolymorphicTypeValidator;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.kokoatalkserver.domain.chatMessage.entity.ChatMessageRedis;
 import org.kokoatalkserver.domain.chatRoom.entity.ChatRoom;
 import org.kokoatalkserver.global.util.config.chatConfig.RedisSubscriber;
 import org.kokoatalkserver.global.util.jwt.entity.RefreshToken;
@@ -61,20 +62,23 @@ public class RedisConfig {
     }
 
     @Bean
-    public RedisTemplate<String, Object> chatRoomRedisTemplate(RedisConnectionFactory connectionFactory) {
-        RedisTemplate<String, Object> template = new RedisTemplate<>();
+    public RedisTemplate<String, ChatMessageRedis> chatRoomRedisTemplate(RedisConnectionFactory connectionFactory) {
+        RedisTemplate<String, ChatMessageRedis> template = new RedisTemplate<>();
         template.setConnectionFactory(connectionFactory);
 
-        PolymorphicTypeValidator typeValidator = BasicPolymorphicTypeValidator
-                .builder()
-                .allowIfSubType(Object.class)
-                .build();
+
 
         // ObjectMapper 설정
         ObjectMapper objectMapper = new ObjectMapper()
                 .registerModule(new JavaTimeModule())
                 .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
                 .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+
+        PolymorphicTypeValidator typeValidator = BasicPolymorphicTypeValidator
+                .builder()
+                .allowIfSubType(Object.class)
+                .build();
+        objectMapper.activateDefaultTyping(typeValidator, ObjectMapper.DefaultTyping.NON_FINAL);
 
         // 직렬화기 설정
         GenericJackson2JsonRedisSerializer serializer = new GenericJackson2JsonRedisSerializer(objectMapper);
