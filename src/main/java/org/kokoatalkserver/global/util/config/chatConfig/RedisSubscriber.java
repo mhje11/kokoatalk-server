@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.kokoatalkserver.domain.chatMessage.entity.ChatMessageRedis;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -19,28 +20,25 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class RedisSubscriber implements MessageListener {
 
-    private final RedisTemplate redisTemplate;
+    @Qualifier("chatRoomRedisTemplate")
+    private final RedisTemplate<String, ChatMessageRedis> redisTemplate;
     private final SimpMessageSendingOperations messagingTemplate;
-    private final ObjectMapper objectMapper = new ObjectMapper()
-            .registerModule(new JavaTimeModule())
-            .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
-            .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+
 
 
     @Override
     public void onMessage(Message message, byte[] pattern) {
         try {
-            String publishMessage = (String) redisTemplate.getStringSerializer().deserialize(message.getBody());
-            log.info("Received message: {}", publishMessage);
-
-            ChatMessageRedis roomMessage = objectMapper.readValue(publishMessage, ChatMessageRedis.class);
-            log.info("Deserialized message : {}", roomMessage.getMessage());
+            // Redis에서 데이터 역직렬화
+            ChatMessageRedis roomMessage = (ChatMessageRedis) redisTemplate.getValueSerializer().deserialize(message.getBody());
+            log.info("Deserialized message: {}", roomMessage.getMessage());
 
             String formattedMessage = roomMessage.getSenderName() + " : " + roomMessage.getMessage();
 
+            // WebSocket으로 메시지 전송
             messagingTemplate.convertAndSend("/sub/chat/room/" + roomMessage.getRoomId(), formattedMessage);
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.error("Error during message processing: ", e);
         }
     }
 }
