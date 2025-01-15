@@ -2,12 +2,17 @@ package org.kokoatalkserver.domain.chatMessage.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.kokoatalkserver.domain.chatMessage.dto.ChatMessageScrollDto;
 import org.kokoatalkserver.domain.chatMessage.entity.ChatMessageRedis;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -26,9 +31,22 @@ public class ChatMessageService {
 
     }
 
-    public List<Object> getRecentMessages(String roomId) {
-        String key = "chat:room:" + roomId;
-        return redisTemplate.opsForList().range(key, -20, -1);
+    public List<ChatMessageScrollDto> getMessageFromRedis(String roomId, LocalDateTime lastCreatedAt, int size) {
+        String redisKey = "chat:room:" + roomId;
+
+        List<Object> redisMessages = redisTemplate.opsForList().range(redisKey, 0, -1);
+
+        if (redisMessages == null || redisMessages.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        return redisMessages.stream()
+                .map(obj -> (ChatMessageRedis) obj)
+                .filter(msg -> msg.getCreated_at().isBefore(lastCreatedAt))
+                .sorted(Comparator.comparing(ChatMessageRedis::getCreated_at).reversed())
+                .limit(size)
+                .map(msg -> ChatMessageScrollDto.createDto(msg.getSenderName(), msg.getMessage(), msg.getCreated_at()))
+                .collect(Collectors.toList());
     }
 
 }
