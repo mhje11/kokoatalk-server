@@ -42,7 +42,7 @@ public class SecurityConfig {
             "/api/member/update/bio", "/api/friend/search",
             "/api/friend/add", "/api/friend/friendList",
             "/api/chatRoom/create", "/api/chatRoom/list", "/api/chatRoom/leave",
-            "/api/chat/room/messages"
+            "/api/chat/room/messages", "/api/chat/image/upload"
     };
 
 
