@@ -1,6 +1,7 @@
 package org.kokoatalkserver.domain.chatMessage.service;
 
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.RequiredArgsConstructor;
@@ -67,11 +68,15 @@ public class ChatService {
     }
 
     private String moveFileToFinalLocation(String tempUrl) {
-        String tempPath = tempUrl.substring(tempUrl.indexOf("/temp"));
+        String tempPath = tempUrl.substring(tempUrl.indexOf("/temp") + 1);
         String finalPath = tempPath.replace("temp/", "chat/");
 
-        amazonS3.copyObject(bucket, tempPath, bucket, finalPath);
-        amazonS3.deleteObject(bucket, tempPath);
+        try {
+            amazonS3.copyObject(bucket, tempPath, bucket, finalPath);
+            amazonS3.deleteObject(bucket, tempPath);
+        } catch (AmazonS3Exception e) {
+            throw new CustomException(ExceptionCode.FILE_UPLOAD_FAILED);
+        }
 
         return amazonS3.getUrl(bucket, finalPath).toString();
     }
