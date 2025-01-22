@@ -6,6 +6,7 @@ import org.springframework.data.redis.core.RedisHash;
 import org.springframework.data.redis.core.TimeToLive;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Getter
@@ -26,6 +27,8 @@ public class ChatMessageRedis {
     private String message;
 
     private LocalDateTime created_at;
+
+    private List<String> imageUrls;
 
     @TimeToLive
     private Long ttl = TimeUnit.DAYS.toSeconds(7);

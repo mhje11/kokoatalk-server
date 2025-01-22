@@ -47,7 +47,7 @@ public class ChatMessageService {
                 .filter(msg -> msg.getCreated_at().isBefore(lastCreatedAt))
                 .sorted(Comparator.comparing(ChatMessageRedis::getCreated_at).reversed())
                 .limit(size)
-                .map(msg -> ChatMessageScrollDto.createDto(msg.getSenderName(), msg.getMessage(), msg.getCreated_at()))
+                .map(msg -> ChatMessageScrollDto.createDto(msg.getSenderName(), msg.getMessage(), msg.getCreated_at(), msg.getImageUrls()))
                 .collect(Collectors.toList());
     }
 
