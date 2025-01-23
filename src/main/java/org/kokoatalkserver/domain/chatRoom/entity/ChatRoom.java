@@ -5,8 +5,10 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.kokoatalkserver.domain.member.entity.Member;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
@@ -35,4 +37,6 @@ public class ChatRoom {
     public static ChatRoom createChatRoom(String roomName, ChatRoomType chatRoomType) {
         return new ChatRoom(roomName, chatRoomType);
     }
+
+
 }

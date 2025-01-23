@@ -2,6 +2,7 @@ package org.kokoatalkserver.domain.chatRoom.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.kokoatalkserver.domain.chatRoom.dto.AddMemberDto;
 import org.kokoatalkserver.domain.chatRoom.dto.ChatRoomCreateDto;
 import org.kokoatalkserver.domain.chatRoom.dto.ChatRoomInfoDto;
 import org.kokoatalkserver.domain.chatRoom.dto.ChatRoomLeaveDto;
@@ -36,5 +37,11 @@ public class ChatRoomRestController {
     public ResponseEntity<String> leaveRoom(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody ChatRoomLeaveDto chatRoomLeaveDto) {
         chatRoomService.leaveRoom(customUserDetails.getUserId(), chatRoomLeaveDto.getRoomId());
         return ResponseEntity.ok("방 떠나기 성공");
+    }
+
+    @PostMapping("/addMember")
+    public ResponseEntity<String> addMember(@RequestBody AddMemberDto addMemberDto) {
+        chatRoomService.checkRoomType(addMemberDto.getRoomId(), addMemberDto.getNewFriendCode());
+        return ResponseEntity.ok("멤버 초대 성공");
     }
 }

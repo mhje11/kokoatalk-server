@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import org.kokoatalkserver.domain.chatRoom.entity.ChatRoom;
 import org.kokoatalkserver.domain.member.entity.Member;
 
+import java.util.List;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -31,4 +33,6 @@ public class ChatRoomParticipant {
     public static ChatRoomParticipant createChatRoomParticipant(ChatRoom chatRoom, Member member) {
         return new ChatRoomParticipant(chatRoom, member);
     }
+
+
 }

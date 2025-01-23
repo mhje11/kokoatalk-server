@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -47,6 +48,7 @@ public class ChatRoomService {
         chatRoomParticipantRepository.saveAll(participants);
 
     }
+
 
     public List<ChatRoomInfoDto> getRoomList(String accountId) {
         Optional<Member> memberOptional = memberRepository.findByLoginId(accountId);
@@ -85,6 +87,64 @@ public class ChatRoomService {
             chatRoomRepository.delete(chatRoom);
             log.info("방삭제 성공");
 
+        }
+    }
+
+    @Transactional
+    public void createGroupChatRoomFromPrivate(ChatRoom privateChatRoom, List<String> newFriendCode) {
+        List<ChatRoomParticipant> currentParticipants = chatRoomParticipantRepository.findAllByChatRoom(privateChatRoom);
+        List<Member> currentMembers = currentParticipants.stream()
+                .map(ChatRoomParticipant::getMember)
+                .collect(Collectors.toList());
+
+        List<Member> newMembers = newFriendCode.stream()
+                .map(friendCode -> memberRepository.findByFriendCode(friendCode)
+                        .orElseThrow(() -> new CustomException(ExceptionCode.MEMBER_NOT_FOUND)))
+                .collect(Collectors.toList());
+
+        List<Member> allMembers = Stream.concat(currentMembers.stream(), newMembers.stream())
+                .distinct()
+                .collect(Collectors.toList());
+        StringBuilder sb = new StringBuilder();
+        for (Member member : allMembers) {
+            sb.append(member.getNickname()).append(", ");
+        }
+        ChatRoom newGroupChatRoom = ChatRoom.createChatRoom(sb.toString().trim(), ChatRoomType.GROUP);
+        chatRoomRepository.save(newGroupChatRoom);
+
+        List<ChatRoomParticipant> newParticipants = allMembers.stream()
+                .map(member -> ChatRoomParticipant.createChatRoomParticipant(newGroupChatRoom, member))
+                .collect(Collectors.toList());
+        chatRoomParticipantRepository.saveAll(newParticipants);
+    }
+
+    @Transactional
+    public void addMembersToGroupChatRoom(ChatRoom groupChatRoom, List<String> newFriendCodes) {
+        List<Member> newMembers = newFriendCodes.stream()
+                .map(friendCode -> memberRepository.findByFriendCode(friendCode)
+                        .orElseThrow(() -> new CustomException(ExceptionCode.MEMBER_NOT_FOUND)))
+                .collect(Collectors.toList());
+
+        List<Member> existingMembers = chatRoomParticipantRepository.findAllByChatRoom(groupChatRoom)
+                .stream()
+                .map(ChatRoomParticipant::getMember)
+                .collect(Collectors.toList());
+
+        List<ChatRoomParticipant> newParticipants = newMembers.stream()
+                .filter(member -> !existingMembers.contains(member))
+                .map(member -> ChatRoomParticipant.createChatRoomParticipant(groupChatRoom, member))
+                .collect(Collectors.toList());
+
+        chatRoomParticipantRepository.saveAll(newParticipants);
+    }
+
+    @Transactional
+    public void checkRoomType(Long roomId, List<String> friendCodes) {
+        ChatRoom chatRoom = chatRoomRepository.findById(roomId).orElseThrow(() -> new CustomException(ExceptionCode.CHAT_ROOM_NOT_FOUND));
+        if (ChatRoomType.GROUP.equals(chatRoom.getChatRoomType())) {
+            addMembersToGroupChatRoom(chatRoom, friendCodes);
+        } else {
+            createGroupChatRoomFromPrivate(chatRoom, friendCodes);
         }
     }
 
