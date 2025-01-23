@@ -105,11 +105,20 @@ public class ChatRoomService {
         List<Member> allMembers = Stream.concat(currentMembers.stream(), newMembers.stream())
                 .distinct()
                 .collect(Collectors.toList());
-        StringBuilder sb = new StringBuilder();
-        for (Member member : allMembers) {
-            sb.append(member.getNickname()).append(", ");
+
+        String chatRoomName;
+        if (allMembers.size() <= 3) {
+            chatRoomName = allMembers.stream()
+                    .map(Member::getNickname)
+                    .collect(Collectors.joining(", "));
+        } else {
+            chatRoomName = allMembers.stream()
+                    .limit(3)
+                    .map(Member::getNickname)
+                    .collect(Collectors.joining(", ")) +
+                    String.format(" 외 %d명", allMembers.size() - 3);
         }
-        ChatRoom newGroupChatRoom = ChatRoom.createChatRoom(sb.toString().trim(), ChatRoomType.GROUP);
+        ChatRoom newGroupChatRoom = ChatRoom.createChatRoom(chatRoomName.trim(), ChatRoomType.GROUP);
         chatRoomRepository.save(newGroupChatRoom);
 
         List<ChatRoomParticipant> newParticipants = allMembers.stream()
