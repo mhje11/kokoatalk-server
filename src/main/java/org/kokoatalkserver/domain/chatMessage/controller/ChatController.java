@@ -29,15 +29,15 @@ public class ChatController {
         chatService.sendMessage(kokoaId, chatMessageSendDto.getRoomId(), chatMessageSendDto.getMessage(), chatMessageSendDto.getImageUrls());
     }
     @PostMapping("/api/chat/image/upload")
-    public ResponseEntity<List<String>> uploadChatImages(@RequestPart List<MultipartFile> images) {
-        if (images == null || images.isEmpty()) {
+    public ResponseEntity<List<String>> uploadChatImages(@RequestPart List<MultipartFile> multipartFile) {
+        if (multipartFile == null || multipartFile.isEmpty()) {
             throw new CustomException(ExceptionCode.INVALID_FILE_FORMAT);
         }
-        List<String> imageUrls = chatService.uploadFiles(images);
+        List<String> imageUrls = chatService.uploadFiles(multipartFile);
         return ResponseEntity.ok(imageUrls);
     }
 
-    @GetMapping("/api/chat/room/messages")
+    @GetMapping("/api/chatRoom/messages")
     public ResponseEntity<List<ChatMessageScrollDto>> getChatMessages(@RequestBody ChatMessageGetDto chatMessageGetDto) {
         LocalDateTime lastCreatedAt = chatMessageGetDto.getLastCreatedAt() != null ? chatMessageGetDto.getLastCreatedAt() : LocalDateTime.now();
         List<ChatMessageScrollDto> messages = chatMessageService.getMessageFromRedis(chatMessageGetDto.getRoomId(), lastCreatedAt, 20);
