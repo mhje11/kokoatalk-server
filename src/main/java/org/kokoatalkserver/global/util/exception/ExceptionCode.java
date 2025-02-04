@@ -71,6 +71,7 @@ public enum ExceptionCode {
     INVALID_FILE_FORMAT(400, HttpStatus.BAD_REQUEST, "유효하지 않은 파일 형식입니다."),
     INVALID_FILE_URL(400, HttpStatus.BAD_REQUEST, "잘못된 파일 URL입니다."),
     CANNOT_DELETE_DEFAULT_IMAGE(400, HttpStatus.BAD_REQUEST, "기본 프로필 또는 배경 이미지는 삭제할 수 없습니다."),
+    IMAGE_URL_EXPIRATION(4000, HttpStatus.BAD_REQUEST, "유효하지 않은 URL 입니다. 다시 업로드 해주세요"),
 
     /**
      *  서버 관련

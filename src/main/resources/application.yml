@@ -45,7 +45,7 @@ cloud:
     region:
       static: ap-northeast-2
     s3:
-      bucket: kokoatalk-bucket
+      bucket: ${AWS_S3_BUCKET}
     stack:
       auto: false
 logging:
