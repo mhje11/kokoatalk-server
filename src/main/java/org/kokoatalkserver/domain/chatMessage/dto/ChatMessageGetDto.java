@@ -9,6 +9,5 @@ import java.time.LocalDateTime;
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class ChatMessageGetDto {
-    private final String roomId;
     private final LocalDateTime lastCreatedAt;
 }
