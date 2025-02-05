@@ -7,6 +7,8 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.RequiredArgsConstructor;
 import org.kokoatalkserver.domain.chatMessage.dto.ChatMessageSaveDto;
 import org.kokoatalkserver.domain.chatMessage.entity.ChatMessageRedis;
+import org.kokoatalkserver.domain.chatRoom.entity.ChatRoom;
+import org.kokoatalkserver.domain.chatRoom.repository.ChatRoomRepository;
 import org.kokoatalkserver.domain.member.entity.Member;
 import org.kokoatalkserver.domain.member.repository.MemberRepository;
 import org.kokoatalkserver.global.util.config.chatConfig.RedisPublisher;
@@ -16,7 +18,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -25,7 +26,6 @@ import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -37,6 +37,7 @@ public class ChatService {
     private final MemberRepository memberRepository;
     private final RedisPublisher redisPublisher;
     private final AmazonS3 amazonS3;
+    private final ChatRoomRepository chatRoomRepository;
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
@@ -96,10 +97,13 @@ public class ChatService {
 
 
     public void sendMessage(Long kokoaId, String roomId, String message, List<String> tempUrls) {
-
         Optional<Member> memberOptional = memberRepository.findById(kokoaId);
         Member member = memberOptional.orElseThrow(() -> new CustomException(ExceptionCode.MEMBER_NOT_FOUND));
 
+        Optional<ChatRoom> chatRoomOptional = chatRoomRepository.findById(Long.valueOf(roomId));
+        if(chatRoomOptional.isEmpty()) {
+            throw new CustomException(ExceptionCode.CHAT_ROOM_NOT_FOUND);
+        }
         List<String> finalImageUrls = moveFilesToFinalLocation(tempUrls);
 
         ChatMessageSaveDto chatMessageSaveDto = ChatMessageSaveDto.createChatMessageSaveDto(roomId, String.valueOf(member.getKokoaId()), member.getNickname(), message, finalImageUrls);

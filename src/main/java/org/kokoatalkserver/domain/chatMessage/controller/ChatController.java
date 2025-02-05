@@ -31,9 +31,6 @@ public class ChatController {
     }
     @PostMapping("/api/chat/image/upload")
     public ResponseEntity<List<String>> uploadChatImages(@RequestPart List<MultipartFile> multipartFile) {
-        if (multipartFile == null || multipartFile.isEmpty()) {
-            throw new CustomException(ExceptionCode.INVALID_FILE_FORMAT);
-        }
         List<String> imageUrls = chatService.uploadFiles(multipartFile);
         return ResponseEntity.ok(imageUrls);
     }
