@@ -53,7 +53,7 @@ public class ChatRoomService {
     public List<ChatRoomInfoDto> getRoomList(String accountId) {
         Optional<Member> memberOptional = memberRepository.findByLoginId(accountId);
         Member member = memberOptional.orElseThrow(() -> new CustomException(ExceptionCode.MEMBER_NOT_FOUND));
-        List<ChatRoomParticipant> roomParticipantList = chatRoomParticipantRepository.findAllByMember(member);
+        List<ChatRoomParticipant> roomParticipantList = chatRoomParticipantRepository.findChatRoomsByMemberId(member.getKokoaId());
 
         return roomParticipantList.stream()
                 .map(participant -> {
