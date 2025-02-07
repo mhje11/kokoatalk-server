@@ -140,6 +140,7 @@ public class ChatRoomService {
                 .map(member -> ChatRoomParticipant.createChatRoomParticipant(newGroupChatRoom, member))
                 .collect(Collectors.toList());
         chatRoomParticipantRepository.saveAll(newParticipants);
+        chatRoomParticipantRepository.flush();
     }
 
     @Transactional
