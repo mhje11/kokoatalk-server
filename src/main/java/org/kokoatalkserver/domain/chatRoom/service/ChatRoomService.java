@@ -6,6 +6,7 @@ import org.kokoatalkserver.domain.ChatRoomParticipant.entity.ChatRoomParticipant
 import org.kokoatalkserver.domain.ChatRoomParticipant.repository.ChatRoomParticipantRepository;
 import org.kokoatalkserver.domain.chatMessage.service.ChatService;
 import org.kokoatalkserver.domain.chatRoom.dto.ChatRoomInfoDto;
+import org.kokoatalkserver.domain.chatRoom.dto.ChatRoomWithParticipantsDto;
 import org.kokoatalkserver.domain.chatRoom.entity.ChatRoom;
 import org.kokoatalkserver.domain.chatRoom.entity.ChatRoomType;
 import org.kokoatalkserver.domain.chatRoom.repository.ChatRoomRepository;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -53,17 +55,30 @@ public class ChatRoomService {
     public List<ChatRoomInfoDto> getRoomList(String accountId) {
         Optional<Member> memberOptional = memberRepository.findByLoginId(accountId);
         Member member = memberOptional.orElseThrow(() -> new CustomException(ExceptionCode.MEMBER_NOT_FOUND));
-        List<ChatRoomParticipant> roomParticipantList = chatRoomParticipantRepository.findChatRoomsByMemberId(member.getKokoaId());
+        List<ChatRoomWithParticipantsDto> chatRooms = chatRoomParticipantRepository.findChatRoomsByMemberId(member.getKokoaId());
 
-        return roomParticipantList.stream()
-                .map(participant -> {
-                    ChatRoom chatRoom = participant.getChatRoom();
-                    List<FriendInfoDto> participantInfoList = chatRoomParticipantRepository.findAllByChatRoom(chatRoom)
-                            .stream()
-                            .map(chatRoomParticipant -> FriendInfoDto.fromMember(chatRoomParticipant.getMember()))
-                            .collect(Collectors.toList());
-                    return ChatRoomInfoDto.createChatRoomInfoDto(chatRoom.getId(), chatRoom.getRoomName(), participantInfoList);
-                })
+        Map<Long, List<FriendInfoDto>> participantMap = chatRooms.stream()
+                .collect(Collectors.groupingBy(
+                        ChatRoomWithParticipantsDto::getRoomId,
+                        Collectors.mapping(dto -> new FriendInfoDto(
+                                dto.getParticipantFriendCode(),
+                                dto.getParticipantNickname(),
+                                dto.getParticipantProfileUrl(),
+                                dto.getParticipantBackgroundUrl(),
+                                dto.getParticipantBio()
+                        ), Collectors.toList())
+                ));
+
+        return participantMap.entrySet().stream()
+                .map(entry -> ChatRoomInfoDto.createChatRoomInfoDto(
+                        entry.getKey(),
+                        chatRooms.stream()
+                                .filter(room -> room.getRoomId().equals(entry.getKey()))
+                                .findFirst()
+                                .map(ChatRoomWithParticipantsDto::getRoomName)
+                                .orElse("알 수 없는 채팅방"),
+                        entry.getValue()
+                ))
                 .collect(Collectors.toList());
     }
 
