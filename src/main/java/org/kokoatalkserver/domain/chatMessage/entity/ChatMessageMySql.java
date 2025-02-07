@@ -2,6 +2,7 @@ package org.kokoatalkserver.domain.chatMessage.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.BatchSize;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -34,6 +35,7 @@ public class ChatMessageMySql {
     @ElementCollection
     @CollectionTable(name = "chat_message_images", joinColumns = @JoinColumn(name = "chat_message_id"))
     @Column(name = "image_url")
+    @BatchSize(size = 20)
     private List<String> imageUrls;
 
     public static ChatMessageMySql createEntity(String id, Long roomId, Long senderId, String senderName, String message, LocalDateTime createdAt, List<String> imageUrls) {
