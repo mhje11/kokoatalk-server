@@ -59,7 +59,7 @@ public class FriendService {
         Optional<Member> memberOptional = memberRepository.findByLoginId(customUserDetails.getUserId());
         Member member = memberOptional.orElseThrow(() -> new CustomException(ExceptionCode.MEMBER_NOT_FOUND));
 
-        List<Friend> friendList = friendRepository.findAllByMember(member);
+        List<Friend> friendList = friendRepository.findFriendsWithMembers(member.getKokoaId());
 
         return friendList.stream()
                 .map(friend -> FriendInfoDto.fromMember(friend.getFriend()))
