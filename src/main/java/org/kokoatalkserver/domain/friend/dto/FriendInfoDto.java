@@ -26,4 +26,8 @@ public class FriendInfoDto {
                 .build();
     }
 
+    public static FriendInfoDto createFriendInfoDto(String friendCode, String nickname, String profileImageUrl, String backgroundImageUrl, String bio) {
+        return new FriendInfoDto(friendCode, nickname, profileImageUrl, backgroundImageUrl, bio);
+    }
+
 }

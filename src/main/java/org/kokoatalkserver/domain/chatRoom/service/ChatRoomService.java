@@ -60,7 +60,7 @@ public class ChatRoomService {
         Map<Long, List<FriendInfoDto>> participantMap = chatRooms.stream()
                 .collect(Collectors.groupingBy(
                         ChatRoomWithParticipantsDto::getRoomId,
-                        Collectors.mapping(dto -> new FriendInfoDto(
+                        Collectors.mapping(dto -> FriendInfoDto.createFriendInfoDto(
                                 dto.getParticipantFriendCode(),
                                 dto.getParticipantNickname(),
                                 dto.getParticipantProfileUrl(),
