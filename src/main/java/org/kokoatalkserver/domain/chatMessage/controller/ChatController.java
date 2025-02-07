@@ -6,8 +6,6 @@ import org.kokoatalkserver.domain.chatMessage.dto.ChatMessageScrollDto;
 import org.kokoatalkserver.domain.chatMessage.dto.ChatMessageSendDto;
 import org.kokoatalkserver.domain.chatMessage.service.ChatMessageService;
 import org.kokoatalkserver.domain.chatMessage.service.ChatService;
-import org.kokoatalkserver.global.util.exception.CustomException;
-import org.kokoatalkserver.global.util.exception.ExceptionCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -38,7 +36,7 @@ public class ChatController {
     @GetMapping("/api/chatRoom/{roomId}/messages")
     public ResponseEntity<List<ChatMessageScrollDto>> getChatMessages(@RequestBody ChatMessageGetDto chatMessageGetDto, @PathVariable String roomId) {
         LocalDateTime lastCreatedAt = chatMessageGetDto.getLastCreatedAt() != null ? chatMessageGetDto.getLastCreatedAt() : LocalDateTime.now();
-        List<ChatMessageScrollDto> messages = chatMessageService.getMessageFromRedis(roomId, lastCreatedAt, 20);
+        List<ChatMessageScrollDto> messages = chatMessageService.getMessage(roomId, lastCreatedAt, 20);
         return ResponseEntity.ok(messages);
     }
 }

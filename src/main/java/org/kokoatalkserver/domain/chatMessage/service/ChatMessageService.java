@@ -12,10 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -39,22 +36,35 @@ public class ChatMessageService {
 
     }
 
-    public List<ChatMessageScrollDto> getMessageFromRedis(String roomId, LocalDateTime lastCreatedAt, int size) {
+    public List<ChatMessageScrollDto> getMessage(String roomId, LocalDateTime lastCreatedAt, int size) {
         String redisKey = "chat:room:" + roomId;
 
         List<ChatMessageRedis> redisMessages = redisTemplate.opsForList().range(redisKey, 0, -1);
+        List<ChatMessageScrollDto> redisResult = new ArrayList<>();
 
-        if (redisMessages == null || redisMessages.isEmpty()) {
-            return Collections.emptyList();
+        if (redisMessages != null || !redisMessages.isEmpty()) {
+            redisResult = redisMessages.stream()
+                    .filter(msg -> msg.getCreated_at().isBefore(lastCreatedAt))
+                    .sorted(Comparator.comparing(ChatMessageRedis::getCreated_at).reversed())
+                    .limit(size)
+                    .map(msg -> ChatMessageScrollDto.createDto(
+                            msg.getSenderName(), msg.getMessage(), msg.getCreated_at(), msg.getImageUrls()
+                    )).collect(Collectors.toList());
+        }
+        if (redisResult.size() < size) {
+            int remainingSize = size - redisResult.size();
+            List<ChatMessageMySql> olderMessages = chatMessageMySqlRepository.findOlderMessages(Long.valueOf(roomId), lastCreatedAt, remainingSize);
+
+            List<ChatMessageScrollDto> mySqlResult = olderMessages.stream()
+                    .map(msg -> ChatMessageScrollDto.createDto(
+                            msg.getSenderName(), msg.getMessage(), msg.getCreatedAt(), msg.getImageUrls()
+                    ))
+                    .collect(Collectors.toList());
+
+            redisResult.addAll(mySqlResult);
         }
 
-        return redisMessages.stream()
-                .map(obj -> (ChatMessageRedis) obj)
-                .filter(msg -> msg.getCreated_at().isBefore(lastCreatedAt))
-                .sorted(Comparator.comparing(ChatMessageRedis::getCreated_at).reversed())
-                .limit(size)
-                .map(msg -> ChatMessageScrollDto.createDto(msg.getSenderName(), msg.getMessage(), msg.getCreated_at(), msg.getImageUrls()))
-                .collect(Collectors.toList());
+        return redisResult;
     }
 
     public void archiveChatMessages() {
