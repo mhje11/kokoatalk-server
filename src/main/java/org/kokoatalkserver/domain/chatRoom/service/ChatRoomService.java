@@ -160,6 +160,7 @@ public class ChatRoomService {
                 .collect(Collectors.toList());
 
         chatRoomParticipantRepository.saveAll(newParticipants);
+        chatRoomParticipantRepository.flush();
     }
 
     @Transactional
