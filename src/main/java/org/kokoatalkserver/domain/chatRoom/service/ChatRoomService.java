@@ -1,5 +1,7 @@
 package org.kokoatalkserver.domain.chatRoom.service;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.kokoatalkserver.domain.ChatRoomParticipant.entity.ChatRoomParticipant;
@@ -31,6 +33,9 @@ public class ChatRoomService {
     private final ChatRoomRepository chatRoomRepository;
     private final ChatRoomParticipantRepository chatRoomParticipantRepository;
     private final MemberRepository memberRepository;
+
+    @PersistenceContext
+    private EntityManager em;
 
     @Transactional
     public void createChatRoom(String roomName, List<String> friendCodeList) {
@@ -141,6 +146,7 @@ public class ChatRoomService {
                 .collect(Collectors.toList());
         chatRoomParticipantRepository.saveAll(newParticipants);
         chatRoomParticipantRepository.flush();
+        em.clear();
     }
 
     @Transactional
@@ -162,6 +168,7 @@ public class ChatRoomService {
 
         chatRoomParticipantRepository.saveAll(newParticipants);
         chatRoomParticipantRepository.flush();
+        em.clear();
     }
 
     @Transactional
