@@ -68,3 +68,7 @@ management:
       all: true
     tags:
       application: KokoatalkServerApplication
+  observations:
+    http:
+      server:
+        requests: true
