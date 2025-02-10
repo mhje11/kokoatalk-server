@@ -1,6 +1,5 @@
 package org.kokoatalkserver.domain.member.Controller;
 
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.kokoatalkserver.domain.member.Service.MemberService;
 import org.kokoatalkserver.domain.member.dto.BioUpdateDto;
@@ -16,7 +15,6 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/api/member")
 public class MemberRestController {
     private final MemberService memberService;
-    private final RefreshTokenService refreshTokenService;
 
     @PutMapping("/upload/profileImage")
     public ResponseEntity<String> uploadProfileImage(MultipartFile multipartFile, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
@@ -52,7 +50,5 @@ public class MemberRestController {
 
         return ResponseEntity.ok("자기소개 수정 완료");
     }
-
-
 
 }

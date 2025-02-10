@@ -1,10 +1,11 @@
 package org.kokoatalkserver.domain.chatRoom.dto;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class ChatRoomWithParticipantsDto {
     private final Long roomId;
     private final String roomName;

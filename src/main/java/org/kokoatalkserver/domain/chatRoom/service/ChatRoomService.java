@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.kokoatalkserver.domain.ChatRoomParticipant.entity.ChatRoomParticipant;
 import org.kokoatalkserver.domain.ChatRoomParticipant.repository.ChatRoomParticipantRepository;
-import org.kokoatalkserver.domain.chatMessage.service.ChatService;
 import org.kokoatalkserver.domain.chatRoom.dto.ChatRoomInfoDto;
 import org.kokoatalkserver.domain.chatRoom.dto.ChatRoomWithParticipantsDto;
 import org.kokoatalkserver.domain.chatRoom.entity.ChatRoom;
