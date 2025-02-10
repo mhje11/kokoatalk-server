@@ -33,7 +33,8 @@ public class SecurityConfig {
 
     String[] allAllowPage = new String[]{
             "/api/auth/signup", "/api/auth/signin",
-            "/api/auth/signout", "/api/auth/refresh"
+            "/api/auth/signout", "/api/auth/refresh",
+            "/actuator/prometheus"
     };
 
     String[] authPage = new String[]{
