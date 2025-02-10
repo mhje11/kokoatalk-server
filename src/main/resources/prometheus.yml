@@ -6,3 +6,6 @@ scrape_configs:
     metrics_path: '/actuator/prometheus'
     static_configs:
       - targets: ['api.kokoatalk.shop']
+    scheme: https
+    tls_config:
+      insecure_skip_verify: true
