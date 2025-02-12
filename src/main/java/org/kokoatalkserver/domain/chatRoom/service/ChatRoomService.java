@@ -5,6 +5,7 @@ import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.kokoatalkserver.domain.ChatRoomParticipant.entity.ChatRoomParticipant;
+import org.kokoatalkserver.domain.ChatRoomParticipant.repository.ChatRoomParticipantJdbcRepository;
 import org.kokoatalkserver.domain.ChatRoomParticipant.repository.ChatRoomParticipantRepository;
 import org.kokoatalkserver.domain.chatRoom.dto.ChatRoomInfoDto;
 import org.kokoatalkserver.domain.chatRoom.dto.ChatRoomWithParticipantsDto;
@@ -32,9 +33,7 @@ public class ChatRoomService {
     private final ChatRoomRepository chatRoomRepository;
     private final ChatRoomParticipantRepository chatRoomParticipantRepository;
     private final MemberRepository memberRepository;
-
-    @PersistenceContext
-    private EntityManager em;
+    private final ChatRoomParticipantJdbcRepository chatRoomParticipantJdbcRepository;
 
     @Transactional
     public void createChatRoom(String roomName, List<String> friendCodeList) {
@@ -143,9 +142,7 @@ public class ChatRoomService {
         List<ChatRoomParticipant> newParticipants = allMembers.stream()
                 .map(member -> ChatRoomParticipant.createChatRoomParticipant(newGroupChatRoom, member))
                 .collect(Collectors.toList());
-        chatRoomParticipantRepository.saveAll(newParticipants);
-        chatRoomParticipantRepository.flush();
-        em.clear();
+        chatRoomParticipantJdbcRepository.batchInsertParticipants(newParticipants);
     }
 
     @Transactional
@@ -165,9 +162,7 @@ public class ChatRoomService {
                 .map(member -> ChatRoomParticipant.createChatRoomParticipant(groupChatRoom, member))
                 .collect(Collectors.toList());
 
-        chatRoomParticipantRepository.saveAll(newParticipants);
-        chatRoomParticipantRepository.flush();
-        em.clear();
+        chatRoomParticipantJdbcRepository.batchInsertParticipants(newParticipants);
     }
 
     @Transactional
