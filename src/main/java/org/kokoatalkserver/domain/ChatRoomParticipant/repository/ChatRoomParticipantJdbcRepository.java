@@ -16,7 +16,8 @@ public class ChatRoomParticipantJdbcRepository {
     private final JdbcTemplate jdbcTemplate;
 
     public void batchInsertParticipants(List<ChatRoomParticipant> participants) {
-        String sql = "INSERT INTO chat_room_participant (chat_room_id, member_id) VALUES (?, ?)";
+        String sql = "INSERT INTO chat_room_participant (chat_room_id, kokoa_id) VALUES (?, ?)";
+
 
         jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
             @Override
