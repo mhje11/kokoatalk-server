@@ -68,7 +68,7 @@ public class ChatMessageService {
     }
 
     public void archiveChatMessages() {
-        Set<String> keys = redisTemplate.keys("chat.room.*");
+        Set<String> keys = redisTemplate.keys("chat:room.*");
 
         if (keys == null || keys.isEmpty()) {
             log.info("레디스 키 없음");
