@@ -39,4 +39,10 @@ public class ChatController {
         List<ChatMessageScrollDto> messages = chatMessageService.getMessage(roomId, lastCreatedAt, 20);
         return ResponseEntity.ok(messages);
     }
+
+    @PostMapping("/api/chatMessage/backup")
+    public ResponseEntity<String> triggerBackup() {
+        chatMessageService.archiveChatMessages();
+        return ResponseEntity.ok("백업 실행");
+    }
 }
