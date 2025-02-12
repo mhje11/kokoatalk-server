@@ -115,10 +115,7 @@ public class ChatRoomService {
                 .map(ChatRoomParticipant::getMember)
                 .collect(Collectors.toList());
 
-        List<Member> newMembers = newFriendCode.stream()
-                .map(friendCode -> memberRepository.findByFriendCode(friendCode)
-                        .orElseThrow(() -> new CustomException(ExceptionCode.MEMBER_NOT_FOUND)))
-                .collect(Collectors.toList());
+        List<Member> newMembers = memberRepository.findByFriendCodeIn(newFriendCode);
 
         List<Member> allMembers = Stream.concat(currentMembers.stream(), newMembers.stream())
                 .distinct()
@@ -147,10 +144,7 @@ public class ChatRoomService {
 
     @Transactional
     public void addMembersToGroupChatRoom(ChatRoom groupChatRoom, List<String> newFriendCodes) {
-        List<Member> newMembers = newFriendCodes.stream()
-                .map(friendCode -> memberRepository.findByFriendCode(friendCode)
-                        .orElseThrow(() -> new CustomException(ExceptionCode.MEMBER_NOT_FOUND)))
-                .collect(Collectors.toList());
+        List<Member> newMembers = memberRepository.findByFriendCodeIn(newFriendCodes);
 
         List<Member> existingMembers = chatRoomParticipantRepository.findAllByChatRoom(groupChatRoom)
                 .stream()
