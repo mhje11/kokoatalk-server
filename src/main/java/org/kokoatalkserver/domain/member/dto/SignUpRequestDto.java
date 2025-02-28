@@ -9,7 +9,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Getter
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PUBLIC)
 public class SignUpRequestDto {
 
     @NotBlank(message = "ID를 입력해주세요")

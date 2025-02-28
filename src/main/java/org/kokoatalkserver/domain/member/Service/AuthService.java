@@ -53,7 +53,7 @@ public class AuthService {
         String accessToken = jwtTokenizer.createAccessToken(member.getKokoaId(), member.getLoginId(), member.getRole().name());
 
         // 리프레시 토큰 검증
-        RefreshToken existingToken = refreshTokenService.findByKokoaId(member.getLoginId())
+        RefreshToken existingToken = refreshTokenService.findRefreshTokenByLoginId(member.getLoginId())
                 .orElse(null);
 
         String refreshToken;

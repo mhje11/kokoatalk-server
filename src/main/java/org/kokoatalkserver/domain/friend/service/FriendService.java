@@ -1,6 +1,5 @@
 package org.kokoatalkserver.domain.friend.service;
 
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.kokoatalkserver.domain.friend.entity.Friend;
 import org.kokoatalkserver.domain.friend.repository.FriendRepository;
@@ -10,7 +9,6 @@ import org.kokoatalkserver.domain.member.repository.MemberRepository;
 import org.kokoatalkserver.global.util.exception.CustomException;
 import org.kokoatalkserver.global.util.exception.ExceptionCode;
 import org.kokoatalkserver.global.util.jwt.service.CustomUserDetails;
-import org.kokoatalkserver.global.util.jwt.service.RefreshTokenService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

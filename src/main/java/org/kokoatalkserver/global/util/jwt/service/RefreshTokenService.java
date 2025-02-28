@@ -40,7 +40,7 @@ public class RefreshTokenService {
     }
 
     //사용자ID로 RefreshToken 조회
-    public Optional<RefreshToken> findByKokoaId(String userId) {
+    public Optional<RefreshToken> findRefreshTokenByLoginId(String userId) {
         return refreshTokenRepository.findByKokoaId(userId);
     }
 

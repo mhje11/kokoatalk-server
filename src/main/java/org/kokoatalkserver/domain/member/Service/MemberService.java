@@ -141,7 +141,7 @@ public class MemberService {
     @Transactional
     public void updateBio(String bio, String accountId) {
         Optional<Member> memberOptional = memberRepository.findByLoginId(accountId);
-        Member member = memberOptional.orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
+        Member member = memberOptional.orElseThrow(() -> new CustomException(ExceptionCode.MEMBER_NOT_FOUND));
         member.updateBio(bio);
         memberRepository.save(member);
     }

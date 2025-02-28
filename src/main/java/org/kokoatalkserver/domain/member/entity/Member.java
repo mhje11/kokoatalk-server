@@ -58,13 +58,6 @@ public class Member {
     }
 
 
-    public static Member createMember(String loginId, String password, Role role) {
-        Member member = new Member();
-        member.loginId = loginId;
-        member.password = password;
-        member.role = Role.MEMBER;
-        return member;
-    }
 
     public void rememberMe(Boolean rememberMe) {
         this.rememberMe = rememberMe;
