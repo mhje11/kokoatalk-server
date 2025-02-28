@@ -58,7 +58,6 @@ public class ChatService {
 
         try (InputStream inputStream = multipartFile.getInputStream()){
             amazonS3.putObject(new PutObjectRequest(bucket, tempPath, inputStream, objectMetadata));
-//            amazonS3.putObject(new PutObjectRequest(bucket, tempPath, inputStream, objectMetadata));
         } catch (IOException e) {
             throw new CustomException(ExceptionCode.FILE_UPLOAD_FAILED);
         }

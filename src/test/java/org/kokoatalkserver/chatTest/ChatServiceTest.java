@@ -1,6 +1,7 @@
 package org.kokoatalkserver.chatTest;
 
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import org.junit.jupiter.api.Assertions;
@@ -15,6 +16,8 @@ import org.kokoatalkserver.domain.chatRoom.repository.ChatRoomRepository;
 import org.kokoatalkserver.domain.member.entity.Member;
 import org.kokoatalkserver.domain.member.repository.MemberRepository;
 import org.kokoatalkserver.global.util.config.chatConfig.RedisPublisher;
+import org.kokoatalkserver.global.util.exception.CustomException;
+import org.kokoatalkserver.global.util.exception.ExceptionCode;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -118,5 +121,63 @@ public class ChatServiceTest {
         verify(amazonS3, times(1)).putObject(any(PutObjectRequest.class));
     }
 
+    @Test
+    void 파일_업로드_실패_빈파일() {
+        assertThrows(CustomException.class,
+                () -> chatService.uploadFiles(List.of(emptyFile)));
+    }
+
+    @Test
+    void 파일_이동_성공() throws MalformedURLException {
+        List<String> tempUrls = List.of(
+                "https://test-bucket.s3.amazonaws.com/temp/test1.png",
+                "https://test-bucket.s3.amazonaws.com/temp/test2.png"
+        );
+
+        List<String> expectedFinalUrls = tempUrls.stream()
+                .map(url -> url.replace("/temp/", "/chat/"))
+                .toList();
+
+        // copyObject Mock 설정
+        doAnswer(invocation -> {
+            String srcKey = invocation.getArgument(1);
+            String destKey = invocation.getArgument(3);
+            System.out.println("Mock S3 Copy: " + srcKey + " → " + destKey);
+            return null;
+        }).when(amazonS3).copyObject(anyString(), anyString(), anyString(), anyString());
+
+        // deleteObject Mock 설정
+        doAnswer(invocation -> {
+            String key = invocation.getArgument(1);
+            System.out.println("Mock S3 Delete: " + key);
+            return null;
+        }).when(amazonS3).deleteObject(anyString(), anyString());
+
+        when(amazonS3.getUrl(anyString(), anyString()))
+                .thenAnswer(invocation -> {
+                    String key = invocation.getArgument(1);
+                    return java.net.URI.create("https://test-bucket.s3.amazonaws.com/" + key).toURL();
+                });
+
+        List<String> actualFinalUrls = chatService.moveFilesToFinalLocation(tempUrls);
+
+        assertNotNull(actualFinalUrls);
+        assertEquals(expectedFinalUrls.size(), actualFinalUrls.size());
+        assertIterableEquals(expectedFinalUrls, actualFinalUrls);
+
+        verify(amazonS3, times(tempUrls.size())).copyObject(anyString(), anyString(), anyString(), anyString());
+        verify(amazonS3, times(tempUrls.size())).deleteObject(anyString(), anyString());
+
+    }
+
+    @Test
+    void 파일_이동_실패_존재하지_않는_파일() {
+        String tempUrl = "https://test-bucket.s3.amazonaws.com/temp/nonexistent.png";
+
+        doThrow(new AmazonS3Exception("파일 없음"))
+                .when(amazonS3).copyObject(anyString(), anyString(), anyString(), anyString());
+
+        assertThrows(CustomException.class, () -> chatService.moveFilesToFinalLocation(List.of(tempUrl)));
+    }
 
 }
