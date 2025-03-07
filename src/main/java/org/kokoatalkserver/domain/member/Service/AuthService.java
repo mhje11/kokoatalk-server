@@ -60,7 +60,7 @@ public class AuthService {
         Long refreshTokenTTL = JwtTokenizer.REFRESH_TOKEN_EXPIRE_COUNT / 1000;
         if (existingToken == null || existingToken.isExpired()) {
             refreshToken = jwtTokenizer.createRefreshToken(member.getKokoaId(), member.getLoginId(), member.getRole().name());
-            RefreshToken newRefreshToken = new RefreshToken(member.getLoginId(), refreshToken, refreshTokenTTL);
+            RefreshToken newRefreshToken = RefreshToken.create(member.getLoginId(), refreshToken, refreshTokenTTL);
             refreshTokenService.saveRefreshToken(newRefreshToken);
         } else {
             refreshToken = existingToken.getRefresh();

@@ -25,7 +25,7 @@ public class Friend {
     private Member friend;
 
     @Builder
-    public Friend(Member member, Member friend) {
+    private Friend(Member member, Member friend) {
         this.member = member;
         this.friend = friend;
     }

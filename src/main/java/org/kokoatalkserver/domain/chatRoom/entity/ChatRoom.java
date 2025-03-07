@@ -41,9 +41,7 @@ public class ChatRoom {
     }
 
     public ChatRoom convertToGroupChat(List<Member> participants) {
-        this.chatRoomType = ChatRoomType.GROUP;
-        this.roomName = generateGroupChatRoomName(participants);
-        return this;
+        return ChatRoom.createChatRoom(generateGroupChatRoomName(participants), ChatRoomType.GROUP);
     }
 
     private String generateGroupChatRoomName(List<Member> participants) {
