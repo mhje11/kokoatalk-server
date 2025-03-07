@@ -37,18 +37,13 @@ public class FriendService {
         Optional<Member> friendOptional = memberRepository.findByFriendCode(friendCode);
         Member friend = friendOptional.orElseThrow(() -> new CustomException(ExceptionCode.MEMBER_NOT_FOUND));
 
-        if (member.equals(friend)) {
-            throw new CustomException(ExceptionCode.CANNOT_ADD_SELF);
-        }
+        member.validateFriendShip(friend);
 
         if (friendRepository.existsByMemberAndFriend(member, friend)) {
             throw new CustomException(ExceptionCode.ALREADY_ADDED_FRIEND);
         }
 
-        Friend friendEntity = Friend.builder()
-                .member(member)
-                .friend(friend)
-                .build();
+        Friend friendEntity = Friend.createFriendEntity(member, friend);
 
         friendRepository.save(friendEntity);
     }

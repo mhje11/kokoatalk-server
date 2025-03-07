@@ -1,4 +1,4 @@
-package org.kokoatalkserver.chatTest;
+package org.kokoatalkserver.service.chatTest;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.AmazonS3Exception;

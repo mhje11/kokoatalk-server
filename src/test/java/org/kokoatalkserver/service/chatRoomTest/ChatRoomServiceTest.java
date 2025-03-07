@@ -1,4 +1,4 @@
-package org.kokoatalkserver.chatRoomTest;
+package org.kokoatalkserver.service.chatRoomTest;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

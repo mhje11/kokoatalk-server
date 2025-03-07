@@ -33,7 +33,6 @@ public class ChatMessageService {
         redisTemplate.opsForList().rightPush(key, message);
         redisTemplate.expire(key, 7, TimeUnit.DAYS);
         log.info("Message saved to Redis. Key: {}", key);
-
     }
 
     public List<ChatMessageScrollDto> getMessage(String roomId, LocalDateTime lastCreatedAt, int size) {
@@ -86,11 +85,7 @@ public class ChatMessageService {
     @Transactional
     protected void saveMessagesToDataBase(List<ChatMessageRedis> messages) {
         List<ChatMessageMySql> messageEntities = messages.stream()
-                .map(msg -> ChatMessageMySql.createEntity(
-                        msg.getId(), Long.valueOf(msg.getRoomId()), Long.valueOf(msg.getSenderId()), msg.getSenderName(), msg.getMessage(), msg.getCreated_at(), msg.getImageUrls()
-
-                ))
-                .filter(entity -> entity != null)
+                .map(ChatMessageMySql::createEntity)
                 .collect(Collectors.toList());
 
         chatMessageMySqlRepository.saveAll(messageEntities);

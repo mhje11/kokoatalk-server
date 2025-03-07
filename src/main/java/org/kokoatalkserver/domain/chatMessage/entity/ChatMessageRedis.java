@@ -7,6 +7,7 @@ import org.springframework.data.redis.core.TimeToLive;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 @Getter
@@ -32,4 +33,17 @@ public class ChatMessageRedis {
 
     @TimeToLive
     private Long ttl = TimeUnit.DAYS.toSeconds(7);
+
+    public static ChatMessageRedis create(String roomId, String senderId, String senderName, String message, List<String> imageUrls) {
+        return ChatMessageRedis.builder()
+                .id(UUID.randomUUID().toString())
+                .roomId(roomId)
+                .senderId(senderId)
+                .senderName(senderName)
+                .message(message)
+                .created_at(LocalDateTime.now())
+                .imageUrls(imageUrls)
+                .ttl(TimeUnit.DAYS.toSeconds(7))
+                .build();
+    }
 }

@@ -15,7 +15,7 @@ public class ChatMessageSaveDto {
     private String message;
     private List<String> imageUrls;
 
-    public static ChatMessageSaveDto createChatMessageSaveDto(String roomId, String senderId, String senderNickname, String message, List<String> imageUrls) {
+    public static ChatMessageSaveDto create(String roomId, String senderId, String senderNickname, String message, List<String> imageUrls) {
         return new ChatMessageSaveDto(roomId, senderId, senderNickname, message, imageUrls);
     }
 }

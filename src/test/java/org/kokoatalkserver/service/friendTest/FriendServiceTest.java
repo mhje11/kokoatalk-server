@@ -1,4 +1,4 @@
-package org.kokoatalkserver.friendTest;
+package org.kokoatalkserver.service.friendTest;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -98,7 +98,7 @@ public class FriendServiceTest {
     void 친구_목록_조회_성공() {
         when(memberRepository.findByLoginId(testMember.getLoginId())).thenReturn(Optional.of(testMember));
         when(friendRepository.findFriendsWithMembers(testMember.getKokoaId()))
-                .thenReturn(List.of(new Friend(testMember, friendMember)));
+                .thenReturn(List.of(Friend.createFriendEntity(testMember, friendMember)));
 
         List<FriendInfoDto> friendList = friendService.getFriendList(customUserDetails);
 

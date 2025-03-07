@@ -1,4 +1,4 @@
-package org.kokoatalkserver.memberTest;
+package org.kokoatalkserver.service.memberTest;
 
 import com.amazonaws.services.s3.AmazonS3;
 import org.junit.jupiter.api.BeforeEach;

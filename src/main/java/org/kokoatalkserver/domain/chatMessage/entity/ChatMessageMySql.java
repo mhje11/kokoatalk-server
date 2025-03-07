@@ -10,6 +10,7 @@ import java.util.List;
 @Entity
 @Table(name = "chat_message")
 @Getter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ChatMessageMySql {
@@ -38,7 +39,14 @@ public class ChatMessageMySql {
     @BatchSize(size = 20)
     private List<String> imageUrls;
 
-    public static ChatMessageMySql createEntity(String id, Long roomId, Long senderId, String senderName, String message, LocalDateTime createdAt, List<String> imageUrls) {
-        return new ChatMessageMySql(id, roomId, senderId, senderName, message, createdAt, imageUrls);
+    public static ChatMessageMySql createEntity(ChatMessageRedis chatMessageRedis) {
+        return ChatMessageMySql.builder()
+                .roomId(Long.valueOf(chatMessageRedis.getRoomId()))
+                .senderId(Long.valueOf(chatMessageRedis.getId()))
+                .senderName(chatMessageRedis.getSenderName())
+                .message(chatMessageRedis.getMessage())
+                .createdAt(chatMessageRedis.getCreated_at())
+                .imageUrls(chatMessageRedis.getImageUrls())
+                .build();
     }
 }

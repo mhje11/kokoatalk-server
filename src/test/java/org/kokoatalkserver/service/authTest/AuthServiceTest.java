@@ -1,4 +1,4 @@
-package org.kokoatalkserver.authTest;
+package org.kokoatalkserver.service.authTest;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

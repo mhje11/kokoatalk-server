@@ -5,6 +5,8 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.kokoatalkserver.global.util.exception.CustomException;
+import org.kokoatalkserver.global.util.exception.ExceptionCode;
 
 @Entity
 @Getter
@@ -86,6 +88,12 @@ public class Member {
 
     public void deleteBackgroundImage() {
         this.backgroundUrl = "https://kokoatalk-bucket.s3.ap-northeast-2.amazonaws.com/kokoatalk_background.jpg";
+    }
+
+    public void validateFriendShip(Member friend) {
+        if (this.equals(friend)) {
+            throw new CustomException(ExceptionCode.CANNOT_ADD_SELF);
+        }
     }
 
 }

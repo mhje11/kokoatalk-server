@@ -1,7 +1,5 @@
 package org.kokoatalkserver.domain.chatRoom.service;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.kokoatalkserver.domain.ChatRoomParticipant.entity.ChatRoomParticipant;
@@ -99,12 +97,12 @@ public class ChatRoomService {
         chatRoomParticipantRepository.delete(chatRoomParticipant);
 
         // 남은 참가자 수 확인 및 방 삭제
-        boolean hasParticipants = chatRoomParticipantRepository.existsByChatRoom(chatRoom);
-        if (!hasParticipants) {
+        List<ChatRoomParticipant> remainingParticipants = chatRoomParticipantRepository.findAllByChatRoom(chatRoom);
+
+        if (chatRoom.isEmpty(remainingParticipants)) {
             log.info("방삭제 : " + chatRoom.getRoomName());
             chatRoomRepository.delete(chatRoom);
             log.info("방삭제 성공");
-
         }
     }
 
@@ -121,24 +119,13 @@ public class ChatRoomService {
                 .distinct()
                 .collect(Collectors.toList());
 
-        String chatRoomName;
-        if (allMembers.size() <= 3) {
-            chatRoomName = allMembers.stream()
-                    .map(Member::getNickname)
-                    .collect(Collectors.joining(", "));
-        } else {
-            chatRoomName = allMembers.stream()
-                    .limit(3)
-                    .map(Member::getNickname)
-                    .collect(Collectors.joining(", ")) +
-                    String.format(" 외 %d명", allMembers.size() - 3);
-        }
-        ChatRoom newGroupChatRoom = ChatRoom.createChatRoom(chatRoomName.trim(), ChatRoomType.GROUP);
+        ChatRoom newGroupChatRoom = privateChatRoom.convertToGroupChat(allMembers);
         chatRoomRepository.save(newGroupChatRoom);
 
         List<ChatRoomParticipant> newParticipants = allMembers.stream()
                 .map(member -> ChatRoomParticipant.createChatRoomParticipant(newGroupChatRoom, member))
                 .collect(Collectors.toList());
+        //id 전략이 GenerationType.IDENTITY 일 경우 배치인서트 안됨 --> jpa 의 도움을 받아야함
         chatRoomParticipantJdbcRepository.batchInsertParticipants(newParticipants);
     }
 
@@ -162,7 +149,7 @@ public class ChatRoomService {
     @Transactional
     public void checkRoomType(Long roomId, List<String> friendCodes) {
         ChatRoom chatRoom = chatRoomRepository.findById(roomId).orElseThrow(() -> new CustomException(ExceptionCode.CHAT_ROOM_NOT_FOUND));
-        if (ChatRoomType.GROUP.equals(chatRoom.getChatRoomType())) {
+        if (chatRoom.isGroupChat()) {
             addMembersToGroupChatRoom(chatRoom, friendCodes);
         } else {
             createGroupChatRoomFromPrivate(chatRoom, friendCodes);
