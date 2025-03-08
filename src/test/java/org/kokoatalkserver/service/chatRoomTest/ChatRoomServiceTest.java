@@ -98,7 +98,6 @@ public class ChatRoomServiceTest {
         when(memberRepository.findByLoginId(testMember.getLoginId())).thenReturn(Optional.of(testMember));
         when(chatRoomRepository.findById(chatRoom.getId())).thenReturn(Optional.of(chatRoom));
         when(chatRoomParticipantRepository.findByChatRoomAndMember(chatRoom, testMember)).thenReturn(Optional.of(chatRoomParticipant));
-        when(chatRoomParticipantRepository.existsByChatRoom(chatRoom)).thenReturn(false);
 
         assertDoesNotThrow(() -> chatRoomService.leaveRoom(testMember.getLoginId(), chatRoom.getId()));
 

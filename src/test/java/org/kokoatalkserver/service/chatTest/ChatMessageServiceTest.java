@@ -45,7 +45,7 @@ public class ChatMessageServiceTest {
     @BeforeEach
     void setUp() {
         testMessage = ChatMessageRedis.builder()
-                .id("message-1")
+                .id("434341")
                 .roomId(roomId)
                 .senderId("1")
                 .senderName("테스트 유저")

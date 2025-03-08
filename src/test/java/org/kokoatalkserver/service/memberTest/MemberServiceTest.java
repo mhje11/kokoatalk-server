@@ -1,35 +1,35 @@
 package org.kokoatalkserver.service.memberTest;
 
-import com.amazonaws.services.s3.AmazonS3;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.kokoatalkserver.domain.member.Service.MemberService;
 import org.kokoatalkserver.domain.member.entity.Member;
 import org.kokoatalkserver.domain.member.repository.MemberRepository;
+import org.kokoatalkserver.domain.s3.service.S3Service;
 import org.kokoatalkserver.global.util.exception.CustomException;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.util.ReflectionTestUtils;
 
-import java.net.URL;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-
 
 @ExtendWith(MockitoExtension.class)
 public class MemberServiceTest {
+
     @InjectMocks
     private MemberService memberService;
+
     @Mock
     private MemberRepository memberRepository;
 
     @Mock
-    private AmazonS3 amazonS3;
+    private S3Service s3Service;
 
     private Member testMember;
     private MockMultipartFile mockFile;
@@ -51,7 +51,6 @@ public class MemberServiceTest {
                 "image/png",
                 new byte[]{1, 2, 3, 4}
         );
-        ReflectionTestUtils.setField(memberService, "bucket", "test-bucket");
     }
 
     @Test
@@ -72,17 +71,14 @@ public class MemberServiceTest {
 
     @Test
     void 프로필이미지_업로드_성공() {
+        when(memberRepository.findByLoginId("testUser")).thenReturn(Optional.of(testMember));
+        when(s3Service.uploadFile(mockFile, "profile/"))
+                .thenReturn("https://test-bucket.s3.amazonaws.com/profile/test.png");
 
-        try {
-            when(memberRepository.findByLoginId("testUser")).thenReturn(Optional.of(testMember));
-            doReturn(new URL("https://test-bucket.s3.amazonaws.com/test.png"))
-                    .when(amazonS3).getUrl(any(), any());
+        assertDoesNotThrow(() -> memberService.uploadProfileImage(mockFile, "testUser"));
 
-            assertDoesNotThrow(() -> memberService.uploadProfileImage(mockFile, "testUser"));
-            verify(memberRepository, times(1)).save(any(Member.class));
-        } catch (Exception e) {
-            fail("예외가 발생하면 안됨: " + e.getMessage());
-        }
+        verify(memberRepository, times(1)).save(any(Member.class));
+        verify(s3Service, times(1)).uploadFile(mockFile, "profile/");
     }
 
     @Test
@@ -92,17 +88,14 @@ public class MemberServiceTest {
 
     @Test
     void 배경이미지_업로드_성공() {
+        when(memberRepository.findByLoginId("testUser")).thenReturn(Optional.of(testMember));
+        when(s3Service.uploadFile(mockFile, "background/"))
+                .thenReturn("https://test-bucket.s3.amazonaws.com/background/test.png");
 
-        try {
-            when(memberRepository.findByLoginId("testUser")).thenReturn(Optional.of(testMember));
-            doReturn(new URL("https://test-bucket.s3.amazonaws.com/test.png"))
-                    .when(amazonS3).getUrl(any(), any());
+        assertDoesNotThrow(() -> memberService.uploadBackgroundImage(mockFile, "testUser"));
 
-            assertDoesNotThrow(() -> memberService.uploadBackgroundImage(mockFile, "testUser"));
-            verify(memberRepository, times(1)).save(any(Member.class));
-        } catch (Exception e) {
-            fail("예외가 발생하면 안됨 : " + e.getMessage());
-        }
+        verify(memberRepository, times(1)).save(any(Member.class));
+        verify(s3Service, times(1)).uploadFile(mockFile, "background/");
     }
 
     @Test
@@ -112,13 +105,13 @@ public class MemberServiceTest {
 
     @Test
     void 프로필_이미지_삭제_성공() {
-
         testMember.updateProfileUrl("https://test-bucket.s3.amazonaws.com/testImagePf.png");
-        System.out.println(testMember.getProfileUrl());
 
         when(memberRepository.findByLoginId("testUser")).thenReturn(Optional.of(testMember));
 
         assertDoesNotThrow(() -> memberService.deleteProfileImage("testUser"));
+
+        verify(s3Service, times(1)).deleteFileByUrl("https://test-bucket.s3.amazonaws.com/testImagePf.png");
         verify(memberRepository, times(1)).save(any(Member.class));
     }
 
@@ -126,16 +119,19 @@ public class MemberServiceTest {
     void 프로필_이미지_삭제_실패_기본이미지() {
         testMember.updateProfileUrl("https://kokoatalk-bucket.s3.ap-northeast-2.amazonaws.com/kokoatalk_default_image.png");
         when(memberRepository.findByLoginId("testUser")).thenReturn(Optional.of(testMember));
+
         assertThrows(CustomException.class, () -> memberService.deleteProfileImage("testUser"));
+        verify(s3Service, never()).deleteFileByUrl(anyString());
     }
 
     @Test
     void 배경이미지_삭제_성공() {
-
         testMember.updateBackgroundUrl("https://test-bucket.s3.amazonaws.com/test_bg.png");
         when(memberRepository.findByLoginId("testUser")).thenReturn(Optional.of(testMember));
 
         assertDoesNotThrow(() -> memberService.deleteBackgroundImage("testUser"));
+
+        verify(s3Service, times(1)).deleteFileByUrl("https://test-bucket.s3.amazonaws.com/test_bg.png");
         verify(memberRepository, times(1)).save(any(Member.class));
     }
 
@@ -145,6 +141,7 @@ public class MemberServiceTest {
         when(memberRepository.findByLoginId("testUser")).thenReturn(Optional.of(testMember));
 
         assertThrows(CustomException.class, () -> memberService.deleteBackgroundImage("testUser"));
+        verify(s3Service, never()).deleteFileByUrl(anyString());
     }
 
     @Test
@@ -161,6 +158,4 @@ public class MemberServiceTest {
 
         assertThrows(CustomException.class, () -> memberService.updateBio("새로운 소개글", "wrongUser"));
     }
-
-
 }

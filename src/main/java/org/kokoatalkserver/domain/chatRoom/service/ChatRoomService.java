@@ -125,7 +125,7 @@ public class ChatRoomService {
         List<ChatRoomParticipant> newParticipants = allMembers.stream()
                 .map(member -> ChatRoomParticipant.createChatRoomParticipant(newGroupChatRoom, member))
                 .collect(Collectors.toList());
-        //id 전략이 GenerationType.IDENTITY 일 경우 배치인서트 안됨 --> jpa 의 도움을 받아야함
+        //id 전략이 GenerationType.IDENTITY 일 경우 배치인서트 안됨 --> jdbc 의 도움을 받아야함
         chatRoomParticipantJdbcRepository.batchInsertParticipants(newParticipants);
     }
 
