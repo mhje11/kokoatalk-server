@@ -29,7 +29,6 @@ public class S3SchedulerTest {
     void 임시파일_삭제_스케줄러_실행_테스트() {
         ReflectionTestUtils.setField(s3Scheduler, "bucket", "test-bucket");
 
-
         ListObjectsV2Result mockResult = mock(ListObjectsV2Result.class);
         when(mockResult.getObjectSummaries()).thenReturn(Collections.emptyList());
 
