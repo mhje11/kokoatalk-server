@@ -131,7 +131,6 @@ public class SecurityConfig {
         config.addAllowedOrigin("https://api.kokoatalk.shop");
         config.addAllowedOrigin("http://localhost:8080");
         config.addAllowedOrigin("https://kokoatalk-server-c794b03f124a.herokuapp.com");
-//        config.addAllowedOrigin("*");
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
         config.setAllowCredentials(true); // 쿠키 허용을 위해 필요
