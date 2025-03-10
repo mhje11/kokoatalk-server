@@ -21,8 +21,8 @@ public class ChatRoomRestController {
 
     @PostMapping("/create")
     public ResponseEntity<String> createChatRoom(@RequestBody ChatRoomCreateDto chatRoomCreateDto) {
-        chatRoomService.createChatRoom(chatRoomCreateDto.getRoomName(), chatRoomCreateDto.getFriendCodeList());
-        return ResponseEntity.ok("채팅방 생성 완료");
+        Long roomId = chatRoomService.createChatRoom(chatRoomCreateDto.getRoomName(), chatRoomCreateDto.getFriendCodeList());
+        return ResponseEntity.ok("채팅방 생성 완료 roomId: " + roomId);
     }
 
     @GetMapping("/list")

@@ -34,7 +34,7 @@ public class ChatRoomService {
     private final ChatRoomParticipantJdbcRepository chatRoomParticipantJdbcRepository;
 
     @Transactional
-    public void createChatRoom(String roomName, List<String> friendCodeList) {
+    public Long createChatRoom(String roomName, List<String> friendCodeList) {
         ChatRoomType chatRoomType = friendCodeList.size() <= 2 ? ChatRoomType.PRIVATE : ChatRoomType.GROUP;
 
         ChatRoom chatRoom = ChatRoom.createChatRoom(roomName, chatRoomType);
@@ -50,6 +50,7 @@ public class ChatRoomService {
 
         chatRoomParticipantRepository.saveAll(participants);
 
+        return savedChatRoom.getId();
     }
 
 
