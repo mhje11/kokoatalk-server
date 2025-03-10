@@ -20,7 +20,7 @@ public class FriendRestController {
     private final FriendService friendService;
 
     //친구검색
-    @GetMapping("/search")
+    @PostMapping("/search")
     public ResponseEntity<FriendInfoDto> findFriend(@RequestBody FriendSearchDto friendSearchDto) {
         FriendInfoDto friendInfoDto = friendService.findByFriendCode(friendSearchDto.getFriendCode());
         return ResponseEntity.ok(friendInfoDto);
