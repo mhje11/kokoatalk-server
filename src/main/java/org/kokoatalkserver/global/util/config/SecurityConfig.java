@@ -136,6 +136,8 @@ public class SecurityConfig {
         config.setAllowCredentials(true); // 쿠키 허용을 위해 필요
         config.setAllowedMethods(List.of("GET", "POST", "DELETE", "PUT"));
         source.registerCorsConfiguration("/**", config);
+        source.registerCorsConfiguration("/swagger-ui/**", config);
+        source.registerCorsConfiguration("/v3/api-docs/**", config);
         return source;
     }
 }

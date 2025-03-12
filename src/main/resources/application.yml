@@ -78,5 +78,5 @@ springdoc:
     path: /api-docs
     enabled: true
   swagger-ui:
-    path: /swagger-ui.html
+    path: /swagger-ui/index.html
     operations-sorter: method
