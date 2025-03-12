@@ -64,7 +64,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         String path = request.getServletPath();
-        return path.startsWith("/actuator/prometheus");
+        return path.startsWith("/actuator/prometheus") ||
+                path.startsWith("/swagger-ui") ||
+                path.startsWith("/v3/api-docs") ||
+                path.startsWith("/api-docs");
     }
 
     private void handleRefreshToken(HttpServletRequest request, HttpServletResponse response, String refreshToken) {
@@ -102,6 +105,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return Collections.emptyList();
         }
     }
+
     private String getToken(HttpServletRequest request, String tokenName) {
         String token = request.getHeader("Authorization");
         if (StringUtils.hasText(token) && token.startsWith("Bearer ")) {
