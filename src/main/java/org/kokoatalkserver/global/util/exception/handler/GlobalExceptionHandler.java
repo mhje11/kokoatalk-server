@@ -22,9 +22,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@RestControllerAdvice (annotations = {RestController.class}, basePackageClasses = {
-        MemberRestController.class, ChatController.class, ChatRoomRestController.class, FriendRestController.class
-})
+@RestControllerAdvice
 @Slf4j
 @Getter
 public class GlobalExceptionHandler {
