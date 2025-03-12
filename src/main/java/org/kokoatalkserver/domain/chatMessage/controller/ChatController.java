@@ -33,6 +33,11 @@ public class ChatController {
     @Operation(summary = "채팅 메시지 전송 (WebSocket)",
     description = "WebSocket을 사용하여 특정 채팅방에 메시지를 전송" + "\n" +
             "해당 엔드포인트는 WebSocket 연결이 필요하며, STOMP 프로토콜을 사용해야 함")
+    @PostMapping("/api/chat/websocket-docs")
+    public ResponseEntity<String> websocketDocs() {
+        return ResponseEntity.ok("Swagger WebSocket 사용법을 표시하기 위한 API");
+    }
+
     @MessageMapping("/chat/send/{roomId}")
     public void sendMessage(Principal principal, ChatMessageSendDto chatMessageSendDto, @DestinationVariable String roomId) {
         Long kokoaId = Long.valueOf(principal.getName());
