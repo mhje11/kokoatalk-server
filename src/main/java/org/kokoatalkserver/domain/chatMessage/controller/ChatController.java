@@ -54,7 +54,7 @@ public class ChatController {
 
     @Operation(summary = "채팅 메시지 조회", description = "특정 채팅방의 메시지를 가져오며 무한 스크롤 방식 이용을 위한 API")
     @ApiResponse(responseCode = "200", description = "채팅방 메시지 조회 성공", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = ChatMessageScrollDto.class))))
-    @GetMapping("/api/chatRoom/{roomId}/messages")
+    @PostMapping("/api/chatRoom/{roomId}/messages")
     public ResponseEntity<List<ChatMessageScrollDto>> getChatMessages(@RequestBody ChatMessageGetDto chatMessageGetDto, @PathVariable String roomId) {
         LocalDateTime lastCreatedAt = chatMessageGetDto.getLastCreatedAt() != null ? chatMessageGetDto.getLastCreatedAt() : LocalDateTime.now();
         List<ChatMessageScrollDto> messages = chatMessageService.getMessage(roomId, lastCreatedAt, 20);
