@@ -31,6 +31,7 @@ public class ChatMessageRedis {
 
     private List<String> imageUrls;
 
+    @Builder.Default
     @TimeToLive
     private Long ttl = TimeUnit.DAYS.toSeconds(7);
 
@@ -43,7 +44,6 @@ public class ChatMessageRedis {
                 .message(message)
                 .created_at(LocalDateTime.now())
                 .imageUrls(imageUrls)
-                .ttl(TimeUnit.DAYS.toSeconds(7))
                 .build();
     }
 }

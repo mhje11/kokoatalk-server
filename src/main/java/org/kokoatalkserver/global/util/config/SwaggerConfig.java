@@ -15,7 +15,7 @@ public class SwaggerConfig {
         return new OpenAPI()
                 .info(apiInfo())
                 .addSecurityItem(new SecurityRequirement().addList(jwtScheme))
-                .components(new Components().addSecuritySchemes(jwtScheme, seucrityScheme()));
+                .components(new Components().addSecuritySchemes(jwtScheme, securityScheme()));
     }
 
     private Info apiInfo() {
