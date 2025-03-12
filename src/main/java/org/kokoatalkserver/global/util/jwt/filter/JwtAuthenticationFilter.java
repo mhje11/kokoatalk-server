@@ -67,7 +67,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         return path.startsWith("/actuator/prometheus") ||
                 path.startsWith("/swagger-ui") ||
                 path.startsWith("/v3/api-docs") ||
-                path.startsWith("/api-docs");
+                path.startsWith("/api-docs") ||
+                path.startsWith("/webjars");
     }
 
     private void handleRefreshToken(HttpServletRequest request, HttpServletResponse response, String refreshToken) {
