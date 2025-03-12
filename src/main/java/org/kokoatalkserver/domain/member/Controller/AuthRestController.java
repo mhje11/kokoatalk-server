@@ -1,5 +1,9 @@
 package org.kokoatalkserver.domain.member.Controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -28,6 +32,7 @@ import java.util.Map;
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
 @Slf4j
+@Tag(name = "Auth", description = "인증 관련 API")
 public class AuthRestController {
     private final AuthService authService;
     private final CookieService cookieService;
@@ -36,12 +41,19 @@ public class AuthRestController {
     private final JwtTokenizer jwtTokenizer;
 
     @PostMapping("/signup")
+    @Operation(summary = "회원가입", description = "새로운 회원을 등록")
+    @ApiResponse(responseCode = "200", description = "회원가입 성공")
     public ResponseEntity<String> signup(@Valid @RequestBody SignUpRequestDto signUpRequestDto) {
         authService.signUp(signUpRequestDto);
         return ResponseEntity.ok("회원가입 성공");
     }
 
     @PostMapping("/signin")
+    @Operation(summary = "로그인", description = "회원 로그인 수행")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "로그인 성공"),
+            @ApiResponse(responseCode = "401", description = "로그인 실패")
+    })
     public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto loginRequestDTO, HttpServletResponse response) {
 
         // 인증 처리
@@ -62,6 +74,8 @@ public class AuthRestController {
         return ResponseEntity.ok(loginResponseDto);
     }
     @PostMapping("/signout")
+    @Operation(summary = "로그아웃", description = "현재 로그인된 사용자를 로그아웃")
+    @ApiResponse(responseCode = "200", description = "로그아웃 성공")
     public ResponseEntity<String> logout(HttpServletRequest request, HttpServletResponse response) {
         String refreshToken = cookieService.getCookieValue(request, "refreshToken");
         authService.logout(refreshToken);
@@ -72,6 +86,11 @@ public class AuthRestController {
         return ResponseEntity.ok("로그아웃되었습니다.");
     }
     @PostMapping("/refresh")
+    @Operation(summary = "토큰 갱신", description = "리프레시 토큰을 사용하여 새로운 액세스 토큰 발급")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "새로운 액세스 토큰 발급 성공"),
+            @ApiResponse(responseCode = "401", description = "리프레시 토큰이 유효하지 않음")
+    })
     public ResponseEntity<?> refreshAccessToken(HttpServletRequest request, HttpServletResponse response) {
         // Step 1: 쿠키에서 리프레시 토큰 추출
         String refreshToken = null;
