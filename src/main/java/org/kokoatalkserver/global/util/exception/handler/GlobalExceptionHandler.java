@@ -3,12 +3,17 @@ package org.kokoatalkserver.global.util.exception.handler;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.kokoatalkserver.domain.chatMessage.controller.ChatController;
+import org.kokoatalkserver.domain.chatRoom.controller.ChatRoomRestController;
+import org.kokoatalkserver.domain.friend.controller.FriendRestController;
+import org.kokoatalkserver.domain.member.Controller.MemberRestController;
 import org.kokoatalkserver.global.util.exception.CustomException;
 import org.kokoatalkserver.global.util.exception.ExceptionCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
@@ -17,7 +22,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@RestControllerAdvice
+@RestControllerAdvice (annotations = {RestController.class}, basePackageClasses = {
+        MemberRestController.class, ChatController.class, ChatRoomRestController.class, FriendRestController.class
+})
 @Slf4j
 @Getter
 public class GlobalExceptionHandler {
