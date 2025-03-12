@@ -72,3 +72,10 @@ management:
   observations:
     annotations:
       enabled: true
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: method

@@ -34,7 +34,7 @@ public class SecurityConfig {
     String[] allAllowPage = new String[]{
             "/api/auth/signup", "/api/auth/signin",
             "/api/auth/signout", "/api/auth/refresh",
-            "/actuator/**"
+            "/actuator/**", "/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**", "/api-docs/**"
     };
 
     String[] authPage = new String[]{
