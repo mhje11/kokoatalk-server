@@ -34,7 +34,7 @@ public class SecurityConfig {
     String[] allAllowPage = new String[]{
             "/api/auth/signup", "/api/auth/signin",
             "/api/auth/signout", "/api/auth/refresh",
-            "/actuator/**", "/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**", "/api-docs/**"
+            "/actuator/**", "/swagger-ui/**", "/swagger-ui/index.html", "/v3/api-docs/**", "/api-docs/**"
     };
 
     String[] authPage = new String[]{
@@ -138,6 +138,7 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", config);
         source.registerCorsConfiguration("/swagger-ui/**", config);
         source.registerCorsConfiguration("/v3/api-docs/**", config);
+        source.registerCorsConfiguration("api-docs/**", config);
         return source;
     }
 }
