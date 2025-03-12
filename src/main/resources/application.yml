@@ -82,4 +82,4 @@ springdoc:
     enabled: true
   swagger-ui:
     path: /swagger-ui/index.html
-    operations-sorter: order
+    operations-sorter: method

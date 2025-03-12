@@ -1,6 +1,8 @@
 package org.kokoatalkserver.domain.member.Controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -42,7 +44,7 @@ public class AuthRestController {
 
     @PostMapping("/signup")
     @Operation(summary = "회원가입", description = "새로운 회원을 등록")
-    @ApiResponse(responseCode = "200", description = "회원가입 성공")
+    @ApiResponse(responseCode = "200", description = "회원가입 성공", content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)))
     public ResponseEntity<String> signup(@Valid @RequestBody SignUpRequestDto signUpRequestDto) {
         authService.signUp(signUpRequestDto);
         return ResponseEntity.ok("회원가입 성공");
@@ -51,7 +53,7 @@ public class AuthRestController {
     @PostMapping("/signin")
     @Operation(summary = "로그인", description = "회원 로그인 수행")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "로그인 성공"),
+            @ApiResponse(responseCode = "200", description = "로그인 성공", content = @Content(mediaType = "application/json", schema = @Schema(implementation = LoginResponseDto.class))),
             @ApiResponse(responseCode = "401", description = "로그인 실패")
     })
     public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto loginRequestDTO, HttpServletResponse response) {
@@ -75,7 +77,7 @@ public class AuthRestController {
     }
     @PostMapping("/signout")
     @Operation(summary = "로그아웃", description = "현재 로그인된 사용자를 로그아웃")
-    @ApiResponse(responseCode = "200", description = "로그아웃 성공")
+    @ApiResponse(responseCode = "200", description = "로그아웃 성공", content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)))
     public ResponseEntity<String> logout(HttpServletRequest request, HttpServletResponse response) {
         String refreshToken = cookieService.getCookieValue(request, "refreshToken");
         authService.logout(refreshToken);
@@ -88,7 +90,7 @@ public class AuthRestController {
     @PostMapping("/refresh")
     @Operation(summary = "토큰 갱신", description = "리프레시 토큰을 사용하여 새로운 액세스 토큰 발급")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "새로운 액세스 토큰 발급 성공"),
+            @ApiResponse(responseCode = "200", description = "새로운 액세스 토큰 발급 성공", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Map.class))),
             @ApiResponse(responseCode = "401", description = "리프레시 토큰이 유효하지 않음")
     })
     public ResponseEntity<?> refreshAccessToken(HttpServletRequest request, HttpServletResponse response) {
