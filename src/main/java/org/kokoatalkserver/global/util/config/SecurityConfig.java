@@ -71,8 +71,6 @@ public class SecurityConfig {
                 .sessionManagement((session) -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-//                        .requestMatchers("/swagger-ui/**", "/swagger-ui.html",
-//                                "/v3/api-docs/**", "/api-docs/**", "/webjars/**").permitAll()
                         .requestMatchers(allAllowPage).permitAll()
                         .requestMatchers(authPage).authenticated()
                         .anyRequest().authenticated()
@@ -131,7 +129,6 @@ public class SecurityConfig {
     public CorsConfigurationSource configurationSource() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
-//        config.setAllowedOriginPatterns(List.of("*"));
         config.addAllowedOrigin("https://www.kokoatalk.shop");
         config.addAllowedOrigin("https://api.kokoatalk.shop");
         config.addAllowedOrigin("http://localhost:8080");
