@@ -44,6 +44,12 @@ public class ChatController {
         chatService.sendMessage(kokoaId, roomId, chatMessageSendDto.getMessage(), chatMessageSendDto.getImageUrls());
     }
 
+    @PostMapping("/api/chat/nGrinderMessageTest")
+    public ResponseEntity<String> ngrinderTest() {
+        chatMessageService.temporaryMessage();
+        return ResponseEntity.ok("임시 저장 완료");
+    }
+
     @Operation(summary = "채팅 이미지 업로드", description = "채팅에서 사용할 이미지를 업로드")
     @ApiResponse(responseCode = "200", description = "채팅방에서 사용할 이미지를 업로드 하는 기능", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = String.class))))
     @PostMapping("/api/chat/image/upload")

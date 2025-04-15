@@ -35,6 +35,13 @@ public class ChatMessageService {
         log.info("Message saved to Redis. Key: {}", key);
     }
 
+    public void temporaryMessage() {
+        String key = "chat:room:" + "4";
+        ChatMessageRedis message = ChatMessageRedis.create("4", "6", "kokoa4", "ngrinder 메시지 테스트" + UUID.randomUUID(), List.of());
+        redisTemplate.opsForList().rightPush(key, message);
+        redisTemplate.expire(key, 7, TimeUnit.DAYS);
+    }
+
     public List<ChatMessageScrollDto> getMessage(String roomId, LocalDateTime lastCreatedAt, int size) {
         String redisKey = "chat:room:" + roomId;
 
