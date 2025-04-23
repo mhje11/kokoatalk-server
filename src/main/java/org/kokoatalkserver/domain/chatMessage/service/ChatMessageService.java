@@ -82,10 +82,17 @@ public class ChatMessageService {
         }
 
         keys.forEach(key -> {
-            List<ChatMessageRedis> messages = redisTemplate.opsForList().range(key, 0, -1);
-            if (messages != null && !messages.isEmpty()) {
-                saveMessagesToDataBase(messages);
+            try {
+                List<ChatMessageRedis> messages = redisTemplate.opsForList().range(key, 0, -1);
+                if (messages != null && !messages.isEmpty()) {
+                    saveMessagesToDataBase(messages);
+                    redisTemplate.delete(key);
+                    log.info("백업 및 삭제 완료 - key : {}", key);
+                }
+            } catch (Exception e) {
+                log.error("백업중 오류 발생 - key: {}, error: {}", key, e.getMessage());
             }
+
         });
     }
 

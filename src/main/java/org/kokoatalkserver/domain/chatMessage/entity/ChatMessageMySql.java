@@ -42,7 +42,7 @@ public class ChatMessageMySql {
     public static ChatMessageMySql createEntity(ChatMessageRedis chatMessageRedis) {
         return ChatMessageMySql.builder()
                 .roomId(Long.valueOf(chatMessageRedis.getRoomId()))
-                .senderId(Long.valueOf(chatMessageRedis.getId()))
+                .senderId(Long.valueOf(chatMessageRedis.getSenderId()))
                 .senderName(chatMessageRedis.getSenderName())
                 .message(chatMessageRedis.getMessage())
                 .createdAt(chatMessageRedis.getCreated_at())
