@@ -20,6 +20,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Slf4j
 public class ChatMessageService {
+    private static final int BATCH_SIZE = 100;
+
     @Qualifier("chatRoomRedisTemplate")
     private final RedisTemplate<String, ChatMessageRedis> redisTemplate;
 
@@ -98,11 +100,16 @@ public class ChatMessageService {
 
     @Transactional
     protected void saveMessagesToDataBase(List<ChatMessageRedis> messages) {
-        List<ChatMessageMySql> messageEntities = messages.stream()
-                .map(ChatMessageMySql::createEntity)
-                .collect(Collectors.toList());
+        for (int i = 0; i < messages.size(); i += BATCH_SIZE) {
+            int end = Math.min(i + BATCH_SIZE, messages.size());
+            List<ChatMessageRedis> batch = messages.subList(i, end);
 
-        chatMessageMySqlRepository.saveAll(messageEntities);
+            List<ChatMessageMySql> messageEntities = batch.stream()
+                    .map(ChatMessageMySql::createEntity)
+                    .collect(Collectors.toList());
+
+            chatMessageMySqlRepository.saveAll(messageEntities);
+        }
     }
 
 }
