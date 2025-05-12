@@ -47,8 +47,10 @@ public class AuthService {
         if (!passwordEncoder.matches(password, member.getPassword())) {
             throw new CustomException(ExceptionCode.PASSWORD_MISMATCH);
         }
-        member.rememberMe(rememberMe);
-        memberRepository.save(member);
+
+        if (!member.getRememberMe().equals(rememberMe)) {
+            member.rememberMe(rememberMe);
+        }
 
         String accessToken = jwtTokenizer.createAccessToken(member.getKokoaId(), member.getLoginId(), member.getRole().name());
 
