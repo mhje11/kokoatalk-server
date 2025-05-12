@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.kokoatalkserver.domain.member.Service.AuthService;
+import org.kokoatalkserver.domain.member.dto.AuthResponseDto;
 import org.kokoatalkserver.domain.member.dto.SignUpRequestDto;
 import org.kokoatalkserver.domain.member.entity.Member;
 import org.kokoatalkserver.domain.member.repository.MemberRepository;
@@ -97,12 +98,12 @@ public class AuthServiceTest {
         when(jwtTokenizer.createRefreshToken(anyLong(), anyString(), anyString())).thenReturn(testRefreshToken);
 
         //when
-        String[] tokens = authService.login(testMember.getLoginId(), rawPassword, true);
+        AuthResponseDto authResponseDto = authService.login(testMember.getLoginId(), rawPassword, true);
 
         //then
-        assertNotNull(tokens);
-        assertEquals(testAccessToken, tokens[0]);
-        assertEquals(testRefreshToken, tokens[1]);
+        assertNotNull(authResponseDto);
+        assertEquals(testAccessToken, authResponseDto.getAccessToken());
+        assertEquals(testRefreshToken, authResponseDto.getRefreshToken());
         verify(memberRepository, times(1)).save(any(Member.class));
         verify(refreshTokenService, times(1)).saveRefreshToken(any(RefreshToken.class));
     }
