@@ -3,6 +3,7 @@ package org.kokoatalkserver.domain.member.Service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.kokoatalkserver.domain.member.dto.AuthResponseDto;
 import org.kokoatalkserver.domain.member.dto.SignUpRequestDto;
 import org.kokoatalkserver.domain.member.entity.Member;
 import org.kokoatalkserver.domain.member.repository.MemberRepository;
@@ -40,7 +41,7 @@ public class AuthService {
     }
 
     @Transactional
-    public String[] login(String userId, String password, Boolean rememberMe) {
+    public AuthResponseDto login(String userId, String password, Boolean rememberMe) {
         Member member = memberRepository.findByLoginId(userId)
                 .orElseThrow(() -> new CustomException(ExceptionCode.MEMBER_NOT_FOUND));
 
@@ -68,7 +69,7 @@ public class AuthService {
             refreshToken = existingToken.getRefresh();
         }
 
-        return new String[]{accessToken, refreshToken};
+        return AuthResponseDto.createAuthResponseDto(accessToken, refreshToken, member);
     }
 
     @Transactional

@@ -13,10 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.kokoatalkserver.domain.member.Service.AuthService;
 import org.kokoatalkserver.domain.member.Service.MemberService;
-import org.kokoatalkserver.domain.member.dto.LoginRequestDto;
-import org.kokoatalkserver.domain.member.dto.LoginResponseDto;
-import org.kokoatalkserver.domain.member.dto.MemberLoginResponseDto;
-import org.kokoatalkserver.domain.member.dto.SignUpRequestDto;
+import org.kokoatalkserver.domain.member.dto.*;
 import org.kokoatalkserver.domain.member.entity.Member;
 import org.kokoatalkserver.global.util.jwt.service.CookieService;
 import org.kokoatalkserver.global.util.jwt.service.RefreshTokenService;
@@ -59,16 +56,16 @@ public class AuthRestController {
     public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto loginRequestDTO, HttpServletResponse response) {
 
         // 인증 처리
-        String[] tokens = authService.login(loginRequestDTO.getAccountId(), loginRequestDTO.getPassword(), loginRequestDTO.isRememberMe());
-        String accessToken = tokens[0];
-        String refreshToken = tokens[1];
+        AuthResponseDto authResponseDto = authService.login(loginRequestDTO.getAccountId(), loginRequestDTO.getPassword(), loginRequestDTO.isRememberMe());
+        String accessToken = authResponseDto.getAccessToken();
+        String refreshToken = authResponseDto.getRefreshToken();
 
         // 쿠키 추가
         cookieService.addCookie(response, "accessToken", accessToken, (int) (JwtTokenizer.ACCESS_TOKEN_EXPIRE_COUNT / 1000));
         cookieService.addRefreshToken(response, "refreshToken", refreshToken, (int) (JwtTokenizer.REFRESH_TOKEN_EXPIRE_COUNT / 1000));
 
         // 로그인 성공한 사용자 정보 응답
-        Member member = memberService.findByLoginId(loginRequestDTO.getAccountId());
+        Member member = authResponseDto.getMember();
 
         MemberLoginResponseDto memberLoginResponseDto = MemberLoginResponseDto.createMemberLoginResponseDto(String.valueOf(member.getLoginId()), member.getNickname(), member.getProfileUrl(), member.getBackgroundUrl(), member.getBio());
         LoginResponseDto loginResponseDto = LoginResponseDto.createLoginResponseDto(accessToken, memberLoginResponseDto);
